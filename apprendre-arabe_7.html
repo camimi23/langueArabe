@@ -1,0 +1,2198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تعلم العربية - Apprendre l'Arabe</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#FFE082 0%,#80DEEA 50%,#F48FB1 100%);min-height:100vh;padding-bottom:40px}
+@keyframes pop{0%,100%{transform:scale(1)}40%{transform:scale(1.15)}70%{transform:scale(0.96)}}
+@keyframes bar{0%,100%{height:4px}50%{height:16px}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes correct{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+@keyframes flip{0%{transform:rotateY(0)}50%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+
+/* HEADER */
+.header{text-align:center;padding:16px 12px 6px}
+.header h1{font-size:clamp(20px,5vw,42px);font-weight:900;color:white;text-shadow:3px 3px 0 rgba(0,0,0,0.14);margin:4px 0;letter-spacing:2px}
+.header .sub{color:rgba(255,255,255,0.9);font-weight:700;font-size:13px}
+.star-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.28);border-radius:50px;padding:4px 14px;margin-top:6px;font-weight:900;font-size:15px;color:white}
+
+/* SCREENS */
+.screen{display:none;padding:0 10px}
+.screen.active{display:block;animation:fadeIn 0.3s ease}
+
+/* BUTTONS */
+.back-btn{display:inline-flex;align-items:center;gap:5px;background:white;border:none;border-radius:50px;padding:7px 15px;cursor:pointer;font-weight:700;font-size:13px;color:#444;box-shadow:0 4px 14px rgba(0,0,0,0.1);margin-bottom:14px;font-family:'Nunito',sans-serif;transition:transform 0.13s}
+.back-btn:hover{transform:scale(1.05)}
+.sec-title{text-align:center;color:white;font-weight:900;font-size:17px;text-shadow:2px 2px 0 rgba(0,0,0,0.12);margin-bottom:12px}
+
+/* LETTERS */
+.letters-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;max-width:860px;margin:0 auto;direction:rtl}
+.lbtn{background:white;border:none;border-radius:15px;padding:11px 4px;cursor:pointer;text-align:center;box-shadow:0 5px 0 rgba(0,0,0,0.1),0 6px 18px rgba(0,0,0,0.08);transition:transform 0.13s,box-shadow 0.13s;position:relative;overflow:hidden}
+.lbtn:hover{transform:translateY(-5px);box-shadow:0 10px 0 rgba(0,0,0,0.1),0 12px 28px rgba(0,0,0,0.12)}
+.lbtn .ar{font-family:'Noto Naskh Arabic',serif;font-size:30px;display:block;line-height:1.3}
+.lbtn .lat{font-size:9px;font-weight:700;color:#999}
+.lbtn .colorbar{position:absolute;bottom:0;left:0;right:0;height:4px;border-radius:0 0 15px 15px}
+
+/* WORDS SCREEN */
+.letter-display{text-align:center;margin-bottom:14px}
+.big-lbtn{background:none;border:none;cursor:pointer;padding:0;display:inline-block}
+.big-letter{font-family:'Noto Naskh Arabic',serif;font-size:86px;line-height:1;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.2));display:block}
+.big-letter.pop{animation:pop 0.5s ease}
+.letter-label{color:white;font-weight:900;font-size:17px;text-shadow:2px 2px 0 rgba(0,0,0,0.14);font-family:'Noto Naskh Arabic',serif}
+.letter-hint{color:rgba(255,255,255,0.7);font-size:11px;margin-top:3px}
+
+.words-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;max-width:860px;margin:0 auto 20px}
+.wcard{background:white;border:3px solid transparent;border-radius:18px;padding:12px 8px;text-align:center;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,0.08),0 7px 18px rgba(0,0,0,0.07);transition:all 0.13s;position:relative;overflow:hidden}
+.wcard:hover{transform:translateY(-4px) scale(1.02)}
+.wcard.playing{animation:pop 0.5s ease}
+.wcard .top-stripe{position:absolute;top:0;left:0;right:0;height:4px;border-radius:18px 18px 0 0}
+.wcard .emoji{font-size:42px;margin-bottom:6px;display:block}
+.wcard .ar-word{font-family:'Noto Naskh Arabic',serif;font-size:19px;font-weight:700;direction:rtl;margin-bottom:2px;color:#222;display:block}
+.wcard .fr-word{font-size:10px;color:#bbb;font-weight:600}
+.sbars{display:flex;justify-content:center;gap:2px;margin-top:5px}
+.sbar{width:3px;border-radius:3px;animation:bar 0.5s ease-in-out infinite}
+
+/* GAMES MENU */
+.games-menu{max-width:760px;margin:0 auto}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:10px}
+.game-card{background:white;border:none;border-radius:20px;padding:20px 12px;text-align:center;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,0.1),0 8px 20px rgba(0,0,0,0.09);transition:transform 0.13s,box-shadow 0.13s;font-family:'Nunito',sans-serif}
+.game-card:hover{transform:translateY(-5px);box-shadow:0 11px 0 rgba(0,0,0,0.1),0 14px 28px rgba(0,0,0,0.12)}
+.game-card .gicon{font-size:44px;display:block;margin-bottom:8px}
+.game-card .gtitle{font-weight:900;font-size:15px;color:#333;margin-bottom:4px}
+.game-card .gdesc{font-size:11px;color:#aaa;font-weight:600}
+
+/* EXERCISE/GAMES SHARED */
+.game-box{max-width:680px;margin:0 auto;background:white;border-radius:24px;padding:24px 20px;box-shadow:0 8px 36px rgba(0,0,0,0.13)}
+.gtop{text-align:center;margin-bottom:16px}
+.gtop-title{font-weight:900;font-size:17px;color:#444}
+.progress-bg{background:#eee;border-radius:50px;height:9px;margin-top:9px;overflow:hidden}
+.progress-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,#00BCD4,#4CAF50);transition:width 0.4s}
+.qlabel{font-size:12px;color:#aaa;font-weight:700;margin-bottom:8px;text-align:center}
+.big-emoji{font-size:72px;display:block;text-align:center;margin-bottom:5px}
+.big-arabic{font-family:'Noto Naskh Arabic',serif;font-size:50px;font-weight:700;direction:rtl;display:block;text-align:center;margin-bottom:3px;cursor:pointer}
+.small-fr{font-size:12px;color:#ccc;text-align:center;margin-bottom:16px;display:block}
+.answers-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.abtn{background:#f5f5f5;border:3px solid transparent;border-radius:13px;padding:13px 7px;cursor:pointer;transition:all 0.15s;font-family:'Noto Naskh Arabic',serif;font-size:20px;font-weight:700;direction:rtl;color:#333}
+.abtn.ebtn{font-family:inherit;font-size:38px;direction:ltr;padding:12px}
+.abtn:hover:not(:disabled){background:#E3F2FD;border-color:#00BCD4}
+.abtn.correct{background:#E8F5E9!important;border-color:#4CAF50!important;animation:correct 0.4s ease}
+.abtn.wrong{background:#FFEBEE!important;border-color:#FF6B6B!important;animation:shake 0.4s ease}
+.feedback{margin-top:12px;padding:11px 13px;border-radius:13px;font-weight:700;font-size:16px;text-align:center;animation:fadeIn 0.3s ease}
+.feedback.good{background:#E8F5E9;color:#2E7D32}
+.feedback.bad{background:#FFEBEE;color:#C62828}
+.next-btn{display:block;margin:12px auto 0;background:linear-gradient(135deg,#00BCD4,#4CAF50);color:white;border:none;border-radius:50px;padding:11px 26px;font-weight:900;font-size:15px;cursor:pointer;box-shadow:0 5px 0 rgba(0,188,212,0.4);font-family:'Nunito',sans-serif}
+.hidden{display:none!important}
+
+/* MEMORY GAME */
+.memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:500px;margin:0 auto}
+.mem-card{height:80px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:14px;cursor:pointer;font-size:28px;font-family:'Noto Naskh Arabic',serif;color:white;font-weight:700;transition:all 0.2s;box-shadow:0 4px 12px rgba(0,0,0,0.15);position:relative;overflow:hidden}
+.mem-card.flipped{background:white;color:#333;border:3px solid #00BCD4}
+.mem-card.matched{background:linear-gradient(135deg,#4CAF50,#81C784)!important;color:white!important;border:none!important;cursor:default;animation:correct 0.4s ease}
+.mem-card.arabic-card.flipped{font-size:22px}
+.mem-timer{text-align:center;font-size:28px;font-weight:900;color:#FF6B6B;margin-bottom:10px}
+
+/* MISSING LETTER */
+.word-display{text-align:center;font-size:52px;font-family:'Noto Naskh Arabic',serif;direction:rtl;margin:10px 0 5px;letter-spacing:4px}
+.blank{display:inline-block;width:50px;height:54px;border-bottom:4px solid #00BCD4;vertical-align:middle;margin:0 3px}
+.letter-choices{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0}
+.lchoice{background:#f5f5f5;border:3px solid transparent;border-radius:12px;padding:10px 16px;font-family:'Noto Naskh Arabic',serif;font-size:26px;cursor:pointer;font-weight:700;transition:all 0.15s}
+.lchoice:hover:not(:disabled){background:#E3F2FD;border-color:#00BCD4}
+.lchoice.correct{background:#E8F5E9;border-color:#4CAF50;animation:correct 0.4s ease}
+.lchoice.wrong{background:#FFEBEE;border-color:#FF6B6B;animation:shake 0.4s ease}
+
+/* SPEED GAME */
+.speed-word{text-align:center;font-family:'Noto Naskh Arabic',serif;font-size:58px;font-weight:700;direction:rtl;margin:8px 0 4px;color:#333}
+.speed-emoji{text-align:center;font-size:64px;margin-bottom:8px}
+.speed-timer-bar{background:#eee;border-radius:50px;height:14px;overflow:hidden;margin-bottom:14px}
+.speed-timer-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,#4CAF50,#FF6B6B);transition:width 0.1s linear}
+.yn-btns{display:flex;gap:14px;justify-content:center}
+.yn-btn{border:none;border-radius:50px;padding:16px 36px;font-weight:900;font-size:22px;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform 0.1s;box-shadow:0 5px 0 rgba(0,0,0,0.15)}
+.yn-btn.yes{background:linear-gradient(135deg,#4CAF50,#81C784);color:white}
+.yn-btn.no{background:linear-gradient(135deg,#FF6B6B,#EF9A9A);color:white}
+.yn-btn:active{transform:scale(0.94)}
+
+/* RESULTS */
+.result-box{background:white;border-radius:24px;padding:30px 20px;max-width:400px;margin:16px auto;box-shadow:0 8px 40px rgba(0,0,0,0.13);text-align:center}
+.res-trophy{font-size:72px}
+.res-title{font-weight:900;font-size:24px;color:#333;margin:8px 0 4px}
+.res-score{font-size:46px;font-weight:900;margin:8px 0}
+.res-msg{color:#aaa;font-size:14px;margin-bottom:20px}
+.res-btns{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+.res-btns button{border:none;border-radius:50px;padding:11px 18px;font-weight:900;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif}
+.btn-retry{background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:white}
+.btn-games{background:linear-gradient(135deg,#9C27B0,#CE93D8);color:white}
+.btn-home{background:linear-gradient(135deg,#00BCD4,#26C6DA);color:white}
+
+/* STORY */
+.story-box{max-width:680px;margin:0 auto;background:white;border-radius:24px;padding:24px 20px;box-shadow:0 8px 36px rgba(0,0,0,0.13)}
+.story-header{text-align:center;margin-bottom:18px}
+.story-title{font-weight:900;font-size:20px;color:#333;margin-bottom:4px}
+.story-letter-badge{display:inline-block;font-family:'Noto Naskh Arabic',serif;font-size:28px;background:linear-gradient(135deg,#FFE082,#FF9800);border-radius:50px;padding:4px 16px;color:white;font-weight:700;margin-bottom:8px}
+.story-progress{display:flex;justify-content:center;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.story-dot{width:10px;height:10px;border-radius:50%;background:#eee;transition:background 0.3s;cursor:pointer}
+.story-dot.active{background:#FF9800;transform:scale(1.3)}
+.story-dot.done{background:#4CAF50}
+.story-sentence{background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:18px;padding:20px 18px;margin-bottom:12px;border-left:5px solid #FF9800;animation:fadeIn 0.4s ease}
+.story-ar{font-family:'Noto Naskh Arabic',serif;font-size:26px;font-weight:700;direction:rtl;text-align:right;line-height:1.8;color:#222;margin-bottom:10px;display:block}
+.story-fr{font-size:14px;color:#888;font-style:italic;line-height:1.5;display:block;margin-bottom:12px}
+.story-audio-btn{background:linear-gradient(135deg,#FF9800,#FFB74D);color:white;border:none;border-radius:50px;padding:8px 18px;font-weight:700;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:6px}
+.story-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:10px}
+.story-nav-btn{background:white;border:2px solid #FF9800;color:#FF9800;border-radius:50px;padding:9px 20px;font-weight:900;font-size:14px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.13s}
+.story-nav-btn:hover{background:#FF9800;color:white}
+.story-nav-btn:disabled{opacity:0.3;cursor:default}
+.story-nav-btn.finish{background:linear-gradient(135deg,#4CAF50,#81C784);border-color:transparent;color:white}
+.story-words-highlight{margin-top:14px;padding:12px 14px;background:#F3E5F5;border-radius:14px}
+.story-words-highlight-title{font-size:11px;font-weight:700;color:#9C27B0;margin-bottom:8px}
+.story-word-chip{display:inline-block;background:white;border:2px solid #CE93D8;border-radius:50px;padding:3px 10px;margin:3px;font-family:'Noto Naskh Arabic',serif;font-size:15px;cursor:pointer;transition:all 0.13s}
+.story-word-chip:hover{background:#9C27B0;color:white;border-color:#9C27B0}
+.story-complete{text-align:center;padding:20px 0}
+.story-complete-emoji{font-size:64px}
+.story-complete-title{font-weight:900;font-size:22px;color:#4CAF50;margin:10px 0 5px}
+
+/* WELCOME SCREEN */
+.welcome-box{max-width:520px;margin:10px auto;text-align:center;padding:0 10px}
+.welcome-logo{font-size:80px;margin-bottom:8px;animation:pop 1s ease}
+.welcome-title{font-family:'Noto Naskh Arabic',serif;font-size:38px;font-weight:700;color:white;text-shadow:3px 3px 0 rgba(0,0,0,0.15);margin-bottom:4px}
+.welcome-sub{color:rgba(255,255,255,0.9);font-weight:700;font-size:16px;margin-bottom:24px}
+.welcome-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.welcome-card{background:white;border-radius:18px;padding:16px 10px;box-shadow:0 6px 0 rgba(0,0,0,0.1),0 8px 20px rgba(0,0,0,0.09)}
+.welcome-card .wc-icon{font-size:32px;margin-bottom:6px}
+.welcome-card .wc-title{font-weight:900;font-size:14px;color:#333;margin-bottom:2px}
+.welcome-card .wc-desc{font-size:11px;color:#aaa}
+.start-btn{background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:white;border:none;border-radius:50px;padding:18px 48px;font-weight:900;font-size:20px;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 8px 0 rgba(255,107,107,0.5),0 12px 30px rgba(255,107,107,0.3);transition:transform 0.13s,box-shadow 0.13s;letter-spacing:1px}
+.start-btn:hover{transform:translateY(-4px);box-shadow:0 12px 0 rgba(255,107,107,0.5),0 18px 36px rgba(255,107,107,0.3)}
+.welcome-stats{display:flex;justify-content:center;gap:20px;margin-top:18px}
+.wstat{color:rgba(255,255,255,0.9);font-weight:700;font-size:13px;text-align:center}
+.wstat span{display:block;font-size:22px;font-weight:900;color:white}
+
+/* EXERCISE SECTION BTNS */
+.action-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.action-btn{border:none;border-radius:50px;padding:13px 24px;font-weight:900;font-size:15px;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 0 rgba(0,0,0,0.12);transition:transform 0.13s}
+.action-btn:hover{transform:translateY(-3px)}
+.btn-exercise{background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:white}
+.btn-game{background:linear-gradient(135deg,#9C27B0,#BA68C8);color:white}
+/* BIG STORIES & PHRASES — dark theme */
+.dark-screen{background:linear-gradient(160deg,#0d1b2a 0%,#1b2838 50%,#162032 100%);min-height:100vh;padding:0 10px 40px;color:white}
+.dark-header{text-align:center;padding:20px 10px 10px}
+.dark-header h2{font-size:clamp(20px,4vw,32px);font-weight:900;color:#FFC83C;margin:4px 0}
+.dark-header p{color:rgba(255,255,255,0.6);font-size:12px}
+.dark-back{background:rgba(255,255,255,0.1);border:none;border-radius:50px;padding:8px 16px;color:white;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:14px}
+.dark-back:hover{background:rgba(255,255,255,0.2)}
+.bs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;max-width:900px;margin:0 auto}
+.bs-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:18px 14px;cursor:pointer;transition:all 0.2s;text-align:left}
+.bs-card:hover{background:rgba(255,255,255,0.1);transform:translateY(-4px);border-color:rgba(255,200,60,0.4)}
+.bs-cover{font-size:42px;margin-bottom:7px;display:block}
+.bs-title{font-weight:900;font-size:15px;color:#FFC83C;margin-bottom:2px}
+.bs-title-ar{font-family:'Noto Naskh Arabic',serif;font-size:17px;direction:rtl;color:rgba(255,255,255,0.7);display:block;margin-bottom:5px}
+.bs-desc{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:7px}
+.bs-tags{display:flex;gap:5px;flex-wrap:wrap}
+.bs-tag{background:rgba(255,200,60,0.1);border:1px solid rgba(255,200,60,0.25);border-radius:50px;padding:2px 9px;font-size:10px;color:#FFC83C;font-weight:700}
+.bs-reading{max-width:740px;margin:0 auto}
+.bs-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:20px 16px;margin-bottom:12px}
+.bs-box-title{font-weight:900;font-size:17px;color:#FFC83C;margin-bottom:3px}
+.bs-box-title-ar{font-family:'Noto Naskh Arabic',serif;font-size:21px;direction:rtl;color:rgba(255,255,255,0.8);display:block;margin-bottom:11px}
+.bs-ctrls{display:flex;gap:6px;margin-bottom:11px;flex-wrap:wrap}
+.bs-ctrl{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:50px;padding:5px 12px;color:white;font-family:'Nunito',sans-serif;font-weight:700;font-size:11px;cursor:pointer}
+.bs-ctrl.on,.bs-ctrl:hover{background:rgba(255,200,60,0.2);border-color:rgba(255,200,60,0.5);color:#FFC83C}
+.bs-arabic{font-family:'Noto Naskh Arabic',serif;font-size:clamp(18px,3.5vw,26px);direction:rtl;line-height:2.2;text-align:right;color:white}
+.bs-sentence{display:inline;cursor:pointer;padding:2px 5px;border-radius:6px;transition:background 0.15s}
+.bs-sentence:hover{background:rgba(255,200,60,0.15)}
+.bs-sentence.on{background:rgba(255,200,60,0.22);color:#FFC83C}
+.bs-word{cursor:pointer;padding:1px 3px;border-radius:4px;display:inline}
+.bs-word:hover{background:rgba(100,200,255,0.2);color:#80D8FF}
+.bs-trans{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:13px;padding:13px;margin-top:9px;font-size:13px;color:rgba(255,255,255,0.65);line-height:1.7;font-style:italic;min-height:36px;transition:all 0.3s}
+.bs-trans.on{background:rgba(255,200,60,0.05);border-color:rgba(255,200,60,0.2);color:rgba(255,255,255,0.85)}
+.bs-wdpop{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:rgba(15,25,45,0.97);border:1px solid rgba(255,200,60,0.4);border-radius:16px;padding:11px 20px;z-index:999;text-align:center;display:none;animation:fadeIn 0.2s}
+.bs-wdpop .wp-ar{font-family:'Noto Naskh Arabic',serif;font-size:22px;color:#FFC83C;direction:rtl}
+.bs-wdpop .wp-fr{color:rgba(255,255,255,0.8);font-size:12px;margin-top:3px}
+.bs-quiz{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:18px 16px}
+.bs-quiz-title{font-weight:900;font-size:15px;color:#FFC83C;margin-bottom:3px}
+.bs-quiz-sub{font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:13px}
+.bs-prog{background:rgba(255,255,255,0.08);border-radius:50px;height:7px;margin-bottom:14px;overflow:hidden}
+.bs-prog-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,#FFC83C,#FF8C00);transition:width 0.4s}
+.bs-q{font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);margin-bottom:7px}
+.bs-q-ar{font-family:'Noto Naskh Arabic',serif;font-size:19px;direction:rtl;color:#FFC83C;margin-bottom:9px;cursor:pointer;display:block;text-align:center}
+.bs-opts{display:grid;gap:6px}
+.bs-opt{background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.1);border-radius:11px;padding:11px 13px;text-align:left;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;color:white;transition:all 0.15s;display:flex;align-items:center;gap:8px}
+.bs-opt:hover:not(:disabled){background:rgba(255,255,255,0.12);border-color:rgba(255,200,60,0.4)}
+.bs-opt.correct{background:rgba(76,175,80,0.2)!important;border-color:#4CAF50!important}
+.bs-opt.wrong{background:rgba(244,67,54,0.2)!important;border-color:#FF5722!important}
+.bs-opt-l{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0}
+.bs-fb{margin-top:9px;padding:10px 13px;border-radius:12px;font-weight:700;font-size:13px;animation:fadeIn 0.3s;line-height:1.5}
+.bs-fb.good{background:rgba(76,175,80,0.15);border:1px solid #4CAF50;color:#A5D6A7}
+.bs-fb.bad{background:rgba(244,67,54,0.15);border:1px solid #FF5722;color:#FFAB91}
+.bs-next{display:block;margin:10px auto 0;background:linear-gradient(135deg,#FFC83C,#FF8C00);color:#1a1a2e;border:none;border-radius:50px;padding:10px 24px;font-weight:900;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif}
+.bs-result{max-width:400px;margin:16px auto;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:22px;padding:26px 18px;text-align:center}
+.bs-rtrophy{font-size:64px}.bs-rtitle{font-size:21px;font-weight:900;color:#FFC83C;margin:7px 0 3px}
+.bs-rscore{font-size:44px;font-weight:900;margin:7px 0}
+.bs-rmsg{color:rgba(255,255,255,0.55);font-size:12px;margin-bottom:16px}
+.bs-rbtns{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.bs-rbtn{border:none;border-radius:50px;padding:10px 16px;font-weight:900;font-size:12px;cursor:pointer;font-family:'Nunito',sans-serif}
+.bs-rbtn-gold{background:linear-gradient(135deg,#FFC83C,#FF8C00);color:#1a1a2e}
+.bs-rbtn-blue{background:linear-gradient(135deg,#00BCD4,#26C6DA);color:white}
+/* PHRASES */
+.ph-levels{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:9px;max-width:800px;margin:0 auto}
+.ph-lcard{background:rgba(255,255,255,0.07);border:2px solid rgba(255,255,255,0.12);border-radius:16px;padding:16px 9px;text-align:center;cursor:pointer;transition:all 0.2s}
+.ph-lcard:hover{background:rgba(255,255,255,0.14);transform:translateY(-3px)}
+.ph-lcard.done{border-color:#4CAF50;background:rgba(76,175,80,0.1)}
+.ph-licon{font-size:34px;margin-bottom:5px}
+.ph-lname{font-weight:900;font-size:12px;margin-bottom:2px}
+.ph-ldesc{font-size:10px;color:rgba(255,255,255,0.5)}
+.ph-box{max-width:640px;margin:0 auto;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:20px 16px}
+.ph-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
+.ph-num{font-weight:700;font-size:12px;color:rgba(255,255,255,0.5)}
+.ph-badge{border-radius:50px;padding:3px 11px;font-weight:900;font-size:11px}
+.ph-prog{background:rgba(255,255,255,0.1);border-radius:50px;height:7px;margin-bottom:16px;overflow:hidden}
+.ph-prog-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,#FFD700,#FF8C00);transition:width 0.4s}
+.ph-ar-wrap{text-align:center;margin:12px 0;padding:16px;background:rgba(255,255,255,0.04);border-radius:14px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;transition:all 0.2s}
+.ph-ar-wrap:hover{background:rgba(255,255,255,0.09)}
+.ph-ar{font-family:'Noto Naskh Arabic',serif;font-size:clamp(20px,4vw,32px);font-weight:700;direction:rtl;line-height:1.6;color:white;display:block}
+.ph-translit{text-align:center;color:rgba(255,255,255,0.4);font-size:11px;font-style:italic;margin-bottom:7px}
+.ph-words{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;direction:rtl;margin:7px 0;padding:9px;background:rgba(255,255,255,0.03);border-radius:11px}
+.ph-wd{font-family:'Noto Naskh Arabic',serif;font-size:17px;padding:3px 9px;background:rgba(255,255,255,0.07);border-radius:7px;cursor:pointer;color:white;border:1px solid transparent;transition:all 0.15s}
+.ph-wd:hover{background:rgba(255,215,0,0.15);border-color:rgba(255,215,0,0.4);color:#FFD700}
+.ph-qlabel{font-size:12px;color:rgba(255,255,255,0.55);font-weight:700;margin:10px 0 7px;text-align:center}
+.ph-opts{display:grid;gap:6px}
+.ph-opt{background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.12);border-radius:11px;padding:11px 13px;text-align:left;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;color:white;transition:all 0.15s;display:flex;align-items:center;gap:7px}
+.ph-opt:hover:not(:disabled){background:rgba(255,255,255,0.14);border-color:rgba(100,200,255,0.5)}
+.ph-opt.correct{background:rgba(76,175,80,0.25)!important;border-color:#4CAF50!important}
+.ph-opt.wrong{background:rgba(244,67,54,0.25)!important;border-color:#FF5722!important}
+.ph-opt-i{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0}
+.ph-fb{margin-top:11px;padding:11px 13px;border-radius:13px;font-weight:700;font-size:13px;animation:fadeIn 0.3s;line-height:1.5}
+.ph-fb.good{background:rgba(76,175,80,0.2);border:1px solid #4CAF50;color:#A5D6A7}
+.ph-fb.bad{background:rgba(244,67,54,0.2);border:1px solid #FF5722;color:#FFAB91}
+.ph-next{display:block;margin:11px auto 0;background:linear-gradient(135deg,#FFD700,#FF8C00);color:#1a1a2e;border:none;border-radius:50px;padding:11px 27px;font-weight:900;font-size:14px;cursor:pointer;font-family:'Nunito',sans-serif}
+.ph-result{max-width:400px;margin:16px auto;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:22px;padding:26px 18px;text-align:center}
+.ph-rtrophy{font-size:64px}.ph-rtitle{font-size:21px;font-weight:900;color:#FFD700;margin:7px 0 3px}
+.ph-rscore{font-size:44px;font-weight:900;margin:7px 0}.ph-rmsg{color:rgba(255,255,255,0.55);font-size:12px;margin-bottom:16px}
+.ph-rbtns{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.ph-rbtn{border:none;border-radius:50px;padding:10px 16px;font-weight:900;font-size:12px;cursor:pointer;font-family:'Nunito',sans-serif}
+.ph-rbtn-gold{background:linear-gradient(135deg,#FFD700,#FF8C00);color:#1a1a2e}
+.ph-rbtn-purple{background:linear-gradient(135deg,#9C27B0,#BA68C8);color:white}
+.ph-rbtn-blue{background:linear-gradient(135deg,#00BCD4,#26C6DA);color:white}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="font-size:20px">⭐ 🌙 ⭐</div>
+  <h1>تعلم العربية 🎉</h1>
+  <div class="sub">Apprends l'Arabe en t'amusant !</div>
+  <div class="star-badge" id="starBadge">⭐ 0 étoile</div>
+</div>
+
+<!-- SCREEN: ACCUEIL -->
+<div id="screen-welcome" class="screen active">
+  <div class="welcome-box">
+    <div class="welcome-logo">🌙</div>
+    <div class="welcome-title">تعلم العربية</div>
+    <div class="welcome-sub">Apprends l'Arabe en t'amusant !</div>
+    <div class="welcome-cards">
+      <div class="welcome-card"><div class="wc-icon">🔤</div><div class="wc-title">28 Lettres</div><div class="wc-desc">420 mots avec audio</div></div>
+      <div class="welcome-card"><div class="wc-icon">🎮</div><div class="wc-title">4 Jeux</div><div class="wc-desc">QCM, Memory, Rapidité…</div></div>
+      <div class="welcome-card"><div class="wc-icon">📚</div><div class="wc-title">5 Histoires</div><div class="wc-desc">Lecture + compréhension</div></div>
+      <div class="welcome-card"><div class="wc-icon">💬</div><div class="wc-title">30 Phrases</div><div class="wc-desc">Du niveau 1 au niveau 5</div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:center">
+      <button class="start-btn" onclick="showScreen('letters')">🔤 Alphabet & Mots</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+        <button class="start-btn" style="font-size:15px;padding:13px 28px;background:linear-gradient(135deg,#9C27B0,#CE93D8)" onclick="showScreen('big-stories')">📚 Histoires</button>
+        <button class="start-btn" style="font-size:15px;padding:13px 28px;background:linear-gradient(135deg,#2196F3,#64B5F6)" onclick="showScreen('phrases-menu')">💬 Phrases</button>
+      </div>
+    </div>
+    <div class="welcome-stats">
+      <div class="wstat"><span>🔊</span>Audio arabe</div>
+      <div class="wstat"><span>🆓</span>Gratuit</div>
+      <div class="wstat"><span>⭐</span>Étoiles</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: LETTRES -->
+<div id="screen-letters" class="screen">
+  <button class="back-btn" onclick="showScreen('welcome')">← Accueil</button>
+  <div class="sec-title">🔤 Choisis une lettre !</div>
+  <div class="letters-grid" id="lettersGrid"></div>
+  <div style="text-align:center;margin-top:20px">
+    <button class="action-btn btn-game" onclick="showScreen('games')">🎮 Jeux & Activités</button>
+  </div>
+</div>
+
+<!-- SCREEN: MOTS -->
+<div id="screen-words" class="screen">
+  <button class="back-btn" onclick="showScreen('letters')">← Retour</button>
+  <div class="letter-display">
+    <button class="big-lbtn" onclick="replayLetter()">
+      <span class="big-letter" id="bigLetter"></span>
+    </button>
+    <div class="letter-label" id="letterLabel"></div>
+    <div class="letter-hint">🔊 Clique sur la lettre pour réécouter</div>
+  </div>
+  <div style="text-align:center;color:rgba(255,255,255,0.9);font-weight:700;font-size:13px;margin-bottom:12px">👆 Appuie sur une image pour entendre le mot !</div>
+  <div class="words-grid" id="wordsGrid"></div>
+  <div class="action-btns">
+    <button class="action-btn btn-exercise" onclick="startQCM()">✏️ QCM</button>
+    <button class="action-btn btn-game" style="background:linear-gradient(135deg,#00BCD4,#26C6DA)" onclick="startMissingLetter()">🔡 Lettre manquante</button>
+    <button class="action-btn btn-game" onclick="startMemory()">🃏 Memory</button>
+    <button class="action-btn btn-game" style="background:linear-gradient(135deg,#FF9800,#FFB74D);color:white" onclick="startSpeed()">⚡ Rapidité</button>
+    <button class="action-btn btn-game" style="background:linear-gradient(135deg,#4CAF50,#81C784);color:white" onclick="startStory()">📖 Histoire</button>
+  </div>
+</div>
+
+<!-- SCREEN: JEUX -->
+<div id="screen-games" class="screen">
+  <button class="back-btn" onclick="showScreen('letters')">← Retour</button>
+  <div class="sec-title">🎮 Choisis un jeu !</div>
+  <div style="text-align:center;color:rgba(255,255,255,0.8);font-size:13px;font-weight:600;margin-bottom:14px">Sélectionne d'abord une lettre pour jouer avec ses mots</div>
+  <div class="games-grid games-menu">
+    <button class="game-card" onclick="requireLetter('qcm')">
+      <span class="gicon">✏️</span>
+      <div class="gtitle">QCM</div>
+      <div class="gdesc">Trouve le bon mot</div>
+    </button>
+    <button class="game-card" onclick="requireLetter('missing')">
+      <span class="gicon">🔡</span>
+      <div class="gtitle">Lettre manquante</div>
+      <div class="gdesc">Complete le mot</div>
+    </button>
+    <button class="game-card" onclick="requireLetter('memory')">
+      <span class="gicon">🃏</span>
+      <div class="gtitle">Memory</div>
+      <div class="gdesc">Trouve les paires</div>
+    </button>
+    <button class="game-card" onclick="requireLetter('speed')">
+      <span class="gicon">⚡</span>
+      <div class="gtitle">Rapidité</div>
+      <div class="gdesc">Vrai ou faux en vitesse</div>
+    </button>
+  </div>
+  <div style="text-align:center;margin-top:20px;color:rgba(255,255,255,0.8);font-size:13px;font-weight:700">
+    Lettre sélectionnée : <span id="selectedLetterInfo" style="color:white;font-family:'Noto Naskh Arabic',serif;font-size:20px">aucune</span>
+  </div>
+  <div style="text-align:center;margin-top:10px">
+    <button class="action-btn btn-exercise" onclick="showScreen('letters')">🔤 Choisir une lettre</button>
+  </div>
+</div>
+
+<!-- SCREEN: QCM -->
+<div id="screen-qcm" class="screen">
+  <button class="back-btn" id="qcmBackBtn" onclick="showScreen('words')">← Retour</button>
+  <div class="game-box">
+    <div class="gtop">
+      <div class="gtop-title" id="qcmTitle">✏️ Question 1 / 15</div>
+      <div class="progress-bg"><div class="progress-fill" id="qcmProgress" style="width:0%"></div></div>
+    </div>
+    <div id="qcmArea"></div>
+    <div id="qcmFeedback" class="hidden"></div>
+    <button class="next-btn hidden" id="qcmNext" onclick="nextQCM()">Suivant →</button>
+  </div>
+</div>
+
+<!-- SCREEN: LETTRE MANQUANTE -->
+<div id="screen-missing" class="screen">
+  <button class="back-btn" onclick="showScreen('words')">← Retour</button>
+  <div class="game-box">
+    <div class="gtop">
+      <div class="gtop-title" id="missingTitle">🔡 Lettre manquante 1/15</div>
+      <div class="progress-bg"><div class="progress-fill" id="missingProgress" style="width:0%"></div></div>
+    </div>
+    <div style="text-align:center;margin:10px 0 5px">
+      <span style="font-size:56px" id="missingEmoji">🦁</span>
+    </div>
+    <div style="text-align:center;color:#aaa;font-size:12px;font-weight:700;margin-bottom:5px">Complète le mot arabe !</div>
+    <div class="word-display" id="missingWord"></div>
+    <div style="text-align:center;color:#ccc;font-size:12px;margin-bottom:10px" id="missingFr"></div>
+    <div class="letter-choices" id="letterChoices"></div>
+    <div id="missingFeedback" class="hidden"></div>
+    <button class="next-btn hidden" id="missingNext" onclick="nextMissing()">Suivant →</button>
+  </div>
+</div>
+
+<!-- SCREEN: MEMORY -->
+<div id="screen-memory" class="screen">
+  <button class="back-btn" onclick="showScreen('words')">← Retour</button>
+  <div class="game-box" style="max-width:560px">
+    <div class="gtop">
+      <div class="gtop-title">🃏 Memory — Trouve les paires !</div>
+      <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px;color:#aaa;font-weight:700">
+        <span>Paires : <span id="memPairs" style="color:#4CAF50;font-size:16px">0</span>/8</span>
+        <span>Essais : <span id="memTries" style="color:#FF6B6B;font-size:16px">0</span></span>
+      </div>
+    </div>
+    <div class="memory-grid" id="memoryGrid"></div>
+    <div id="memoryWin" class="hidden" style="text-align:center;margin-top:16px">
+      <div style="font-size:48px">🎉</div>
+      <div style="font-weight:900;font-size:20px;color:#4CAF50;margin:6px 0">Bravo !</div>
+      <div style="color:#aaa;font-size:13px;margin-bottom:12px" id="memWinMsg"></div>
+      <div style="display:flex;gap:9px;justify-content:center">
+        <button class="btn-retry res-btns" style="border:none;border-radius:50px;padding:10px 18px;font-weight:900;font-size:13px;cursor:pointer;background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:white;font-family:'Nunito',sans-serif" onclick="startMemory()">🔄 Rejouer</button>
+        <button class="btn-home res-btns" style="border:none;border-radius:50px;padding:10px 18px;font-weight:900;font-size:13px;cursor:pointer;background:linear-gradient(135deg,#00BCD4,#26C6DA);color:white;font-family:'Nunito',sans-serif" onclick="showScreen('words')">← Retour</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: RAPIDITÉ -->
+<div id="screen-speed" class="screen">
+  <button class="back-btn" onclick="stopSpeed();showScreen('words')">← Retour</button>
+  <div class="game-box">
+    <div class="gtop">
+      <div class="gtop-title">⚡ Rapidité — Vrai ou Faux ?</div>
+      <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px;color:#aaa;font-weight:700">
+        <span>Score : <span id="speedScore" style="color:#4CAF50;font-size:16px">0</span></span>
+        <span>Question : <span id="speedQ" style="color:#FF9800;font-size:16px">1</span>/20</span>
+      </div>
+    </div>
+    <div class="speed-timer-bar"><div class="speed-timer-fill" id="speedTimerFill" style="width:100%"></div></div>
+    <div style="text-align:center;color:#aaa;font-size:12px;font-weight:700;margin-bottom:6px">Ce mot correspond-il à cette image ?</div>
+    <div class="speed-emoji" id="speedEmoji">🦁</div>
+    <div class="speed-word" id="speedWord">أسد</div>
+    <div id="speedFeedback" style="text-align:center;font-size:22px;font-weight:900;height:30px;margin:6px 0"></div>
+    <div class="yn-btns">
+      <button class="yn-btn yes" onclick="answerSpeed(true)">✅ Oui</button>
+      <button class="yn-btn no" onclick="answerSpeed(false)">❌ Non</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: HISTOIRE -->
+<div id="screen-story" class="screen">
+  <button class="back-btn" onclick="showScreen('words')">← Retour</button>
+  <div class="story-box">
+    <div class="story-header">
+      <div class="story-letter-badge" id="storyLetterBadge">أ</div>
+      <div class="story-title" id="storyTitle">📖 Histoire</div>
+      <div class="story-progress" id="storyDots"></div>
+    </div>
+    <div id="storyContent"></div>
+    <div class="story-nav">
+      <button class="story-nav-btn" id="storyPrev" onclick="storyNav(-1)">← Précédent</button>
+      <span style="font-size:12px;color:#aaa;font-weight:700" id="storyCounter">1 / 5</span>
+      <button class="story-nav-btn" id="storyNext" onclick="storyNav(1)">Suivant →</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: RÉSULTATS -->
+<div id="screen-results" class="screen">
+  <div class="result-box">
+    <div class="res-trophy" id="resTrophy"></div>
+    <div class="res-title" id="resTitle"></div>
+    <div class="res-score" id="resScore"></div>
+    <div class="res-msg" id="resMsg"></div>
+    <div class="res-btns">
+      <button class="btn-retry" id="resRetry" onclick="">🔄 Rejouer</button>
+      <button class="btn-games" onclick="showScreen('games')">🎮 Autres jeux</button>
+      <button class="btn-home" onclick="showScreen('letters')">🔤 Lettres</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: GRANDES HISTOIRES -->
+<div id="screen-big-stories" class="screen">
+<div class="dark-screen">
+  <div class="dark-header">
+    <button class="dark-back" onclick="showScreen('welcome')">← Accueil</button>
+    <h2>📚 Histoires en Arabe</h2>
+    <p>Lis, clique sur les mots pour les traduire, puis réponds aux questions !</p>
+  </div>
+  <div id="bsView">
+    <div class="bs-grid" id="bsGrid"></div>
+  </div>
+  <div id="bsReadingView" style="display:none">
+    <div class="bs-reading">
+      <button class="dark-back" onclick="bsShowGrid()">← Histoires</button>
+      <div class="bs-box">
+        <div class="bs-box-title" id="bsBoxTitle"></div>
+        <span class="bs-box-title-ar" id="bsBoxTitleAr"></span>
+        <div class="bs-ctrls">
+          <button class="bs-ctrl on" id="bsCtrlRead" onclick="bsSetMode('read')">📖 Lire</button>
+          <button class="bs-ctrl" id="bsCtrlTrans" onclick="bsSetMode('translate')">🔤 Traduction</button>
+          <button class="bs-ctrl" id="bsCtrlListen" onclick="bsListenAll()">🔊 Écouter</button>
+        </div>
+        <div class="bs-arabic" id="bsArabicText"></div>
+        <div class="bs-trans" id="bsTrans">Clique sur une phrase pour voir sa traduction</div>
+      </div>
+      <div class="bs-quiz">
+        <div class="bs-quiz-title">❓ Questions de compréhension</div>
+        <div class="bs-quiz-sub">Teste ta compréhension de l'histoire</div>
+        <div class="bs-prog"><div class="bs-prog-fill" id="bsProgFill" style="width:0%"></div></div>
+        <div id="bsQuizArea"></div>
+        <div id="bsFb" class="hidden"></div>
+        <button class="bs-next hidden" id="bsNext" onclick="bsNextQ()">Suivant →</button>
+      </div>
+    </div>
+  </div>
+  <div id="bsResultView" style="display:none">
+    <div class="bs-result">
+      <div class="bs-rtrophy" id="bsRTrophy"></div>
+      <div class="bs-rtitle" id="bsRTitle"></div>
+      <div class="bs-rscore" id="bsRScore"></div>
+      <div class="bs-rmsg" id="bsRMsg"></div>
+      <div class="bs-rbtns">
+        <button class="bs-rbtn bs-rbtn-gold" id="bsRRetry">🔄 Rejouer</button>
+        <button class="bs-rbtn bs-rbtn-blue" onclick="bsShowGrid()">📚 Histoires</button>
+        <button class="bs-rbtn" style="background:rgba(255,255,255,0.1);color:white" onclick="showScreen('welcome')">🏠 Accueil</button>
+      </div>
+    </div>
+  </div>
+  <div class="bs-wdpop" id="bsWdPop">
+    <div class="wp-ar" id="bsWpAr"></div>
+    <div class="wp-fr" id="bsWpFr"></div>
+  </div>
+</div>
+</div>
+
+<!-- SCREEN: PHRASES -->
+<div id="screen-phrases-menu" class="screen">
+<div class="dark-screen">
+  <div class="dark-header">
+    <button class="dark-back" onclick="showScreen('welcome')">← Accueil</button>
+    <h2>💬 Phrases Arabes</h2>
+    <p>30 phrases — du niveau 1 (très facile) au niveau 5 (avancé débutant)</p>
+  </div>
+  <div id="phView">
+    <div class="ph-levels" id="phLevelsGrid"></div>
+  </div>
+  <div id="phPhraseView" style="display:none">
+    <button class="dark-back" onclick="phShowLevels()">← Niveaux</button>
+    <div class="ph-box">
+      <div class="ph-hdr">
+        <span class="ph-num" id="phNum">Phrase 1/6</span>
+        <span class="ph-badge" id="phBadge">Niveau 1</span>
+      </div>
+      <div class="ph-prog"><div class="ph-prog-fill" id="phProgFill" style="width:0%"></div></div>
+      <div class="ph-ar-wrap" onclick="phSpeak()">
+        <span class="ph-ar" id="phAr"></span>
+        <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:5px">🔊 Clique pour écouter</div>
+      </div>
+      <div class="ph-translit" id="phTranslit"></div>
+      <div class="ph-words" id="phWords"></div>
+      <div class="ph-qlabel">Que signifie cette phrase ?</div>
+      <div class="ph-opts" id="phOpts"></div>
+      <div id="phFb" class="hidden"></div>
+      <button class="ph-next hidden" id="phNext" onclick="phNextPhrase()">Suivant →</button>
+    </div>
+  </div>
+  <div id="phResultView" style="display:none">
+    <div class="ph-result">
+      <div class="ph-rtrophy" id="phRTrophy"></div>
+      <div class="ph-rtitle" id="phRTitle"></div>
+      <div class="ph-rscore" id="phRScore"></div>
+      <div class="ph-rmsg" id="phRMsg"></div>
+      <div class="ph-rbtns">
+        <button class="ph-rbtn ph-rbtn-gold" id="phRRetry">🔄 Rejouer</button>
+        <button class="ph-rbtn ph-rbtn-purple" onclick="phShowLevels()">📋 Niveaux</button>
+        <button class="ph-rbtn ph-rbtn-blue" onclick="showScreen('welcome')">🏠 Accueil</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// =====================================================
+// DONNÉES : 28 lettres × 15 mots
+// =====================================================
+const LETTERS=[
+  {letter:'أ',arabicName:'أَلِف',name:'Alef',color:'#FF6B6B'},
+  {letter:'ب',arabicName:'بَاء',name:'Ba',color:'#FF9800'},
+  {letter:'ت',arabicName:'تَاء',name:'Ta',color:'#FFD600'},
+  {letter:'ث',arabicName:'ثَاء',name:'Tha',color:'#4CAF50'},
+  {letter:'ج',arabicName:'جِيم',name:'Jim',color:'#00BCD4'},
+  {letter:'ح',arabicName:'حَاء',name:'Ha',color:'#2196F3'},
+  {letter:'خ',arabicName:'خَاء',name:'Kha',color:'#9C27B0'},
+  {letter:'د',arabicName:'دَال',name:'Dal',color:'#E91E63'},
+  {letter:'ذ',arabicName:'ذَال',name:'Dhal',color:'#795548'},
+  {letter:'ر',arabicName:'رَاء',name:'Ra',color:'#FF5722'},
+  {letter:'ز',arabicName:'زَاي',name:'Zay',color:'#8BC34A'},
+  {letter:'س',arabicName:'سِين',name:'Sin',color:'#00ACC1'},
+  {letter:'ش',arabicName:'شِين',name:'Shin',color:'#7B1FA2'},
+  {letter:'ص',arabicName:'صَاد',name:'Sad',color:'#FF5722'},
+  {letter:'ض',arabicName:'ضَاد',name:'Dad',color:'#607D8B'},
+  {letter:'ط',arabicName:'طَاء',name:'Ta',color:'#E91E63'},
+  {letter:'ظ',arabicName:'ظَاء',name:'Dha',color:'#FF6B6B'},
+  {letter:'ع',arabicName:'عَيْن',name:'Ayn',color:'#4CAF50'},
+  {letter:'غ',arabicName:'غَيْن',name:'Ghayn',color:'#9C27B0'},
+  {letter:'ف',arabicName:'فَاء',name:'Fa',color:'#2196F3'},
+  {letter:'ق',arabicName:'قَاف',name:'Qaf',color:'#FF9800'},
+  {letter:'ك',arabicName:'كَاف',name:'Kaf',color:'#00BCD4'},
+  {letter:'ل',arabicName:'لَام',name:'Lam',color:'#E91E63'},
+  {letter:'م',arabicName:'مِيم',name:'Mim',color:'#FF5722'},
+  {letter:'ن',arabicName:'نُون',name:'Nun',color:'#8BC34A'},
+  {letter:'ه',arabicName:'هَاء',name:'Ha',color:'#00BCD4'},
+  {letter:'و',arabicName:'وَاو',name:'Waw',color:'#9C27B0'},
+  {letter:'ي',arabicName:'يَاء',name:'Ya',color:'#FF6B6B'},
+];
+
+const WORDS={
+  'أ':[
+    {arabic:'أسد',french:'Lion',emoji:'🦁'},
+    {arabic:'أرنب',french:'Lapin',emoji:'🐰'},
+    {arabic:'أخطبوط',french:'Pieuvre',emoji:'🐙'},
+    {arabic:'أفعى',french:'Serpent',emoji:'🐍'},
+    {arabic:'أخضر',french:'Vert',emoji:'🟢'},
+    {arabic:'أزرق',french:'Bleu',emoji:'🔵'},
+    {arabic:'أصفر',french:'Jaune',emoji:'🟡'},
+    {arabic:'أحمر',french:'Rouge',emoji:'🔴'},
+    {arabic:'أم',french:'Maman',emoji:'👩'},
+    {arabic:'أب',french:'Papa',emoji:'👨'},
+    {arabic:'أذن',french:'Oreille',emoji:'👂'},
+    {arabic:'أنف',french:'Nez',emoji:'👃'},
+    {arabic:'أصابع',french:'Doigts',emoji:'🖐'},
+    {arabic:'أرض',french:'Terre',emoji:'🌍'},
+    {arabic:'أمل',french:'Espoir',emoji:'🌟'},
+  ],
+  'ب':[
+    {arabic:'بطة',french:'Canard',emoji:'🦆'},
+    {arabic:'بيت',french:'Maison',emoji:'🏠'},
+    {arabic:'بقرة',french:'Vache',emoji:'🐮'},
+    {arabic:'بالون',french:'Ballon',emoji:'🎈'},
+    {arabic:'برتقال',french:'Orange',emoji:'🍊'},
+    {arabic:'بطيخ',french:'Pastèque',emoji:'🍉'},
+    {arabic:'بيضة',french:'Œuf',emoji:'🥚'},
+    {arabic:'بحر',french:'Mer',emoji:'🌊'},
+    {arabic:'بستان',french:'Verger',emoji:'🌳'},
+    {arabic:'بطل',french:'Héros',emoji:'🦸'},
+    {arabic:'بنت',french:'Fille',emoji:'👧'},
+    {arabic:'بنفسج',french:'Violet',emoji:'🟣'},
+    {arabic:'بوم',french:'Hibou',emoji:'🦉'},
+    {arabic:'برق',french:'Éclair',emoji:'⚡'},
+    {arabic:'بابا نويل',french:'Père Noël',emoji:'🎅'},
+  ],
+  'ت':[
+    {arabic:'تفاح',french:'Pomme',emoji:'🍎'},
+    {arabic:'تمساح',french:'Crocodile',emoji:'🐊'},
+    {arabic:'تلفون',french:'Téléphone',emoji:'📱'},
+    {arabic:'توت',french:'Mûre',emoji:'🫐'},
+    {arabic:'تاج',french:'Couronne',emoji:'👑'},
+    {arabic:'تمر',french:'Datte',emoji:'🌴'},
+    {arabic:'تين',french:'Figue',emoji:'🍈'},
+    {arabic:'تلميذ',french:'Élève',emoji:'🧑‍🎓'},
+    {arabic:'تراب',french:'Sable',emoji:'🏖'},
+    {arabic:'تنور',french:'Four',emoji:'🫙'},
+    {arabic:'تمثال',french:'Statue',emoji:'🗽'},
+    {arabic:'تنين',french:'Dragon',emoji:'🐉'},
+    {arabic:'تلسكوب',french:'Télescope',emoji:'🔭'},
+    {arabic:'تمبلة',french:'Balançoire',emoji:'🎠'},
+    {arabic:'تابوت',french:'Coffre',emoji:'📦'},
+  ],
+  'ث':[
+    {arabic:'ثعلب',french:'Renard',emoji:'🦊'},
+    {arabic:'ثلج',french:'Neige',emoji:'❄️'},
+    {arabic:'ثور',french:'Taureau',emoji:'🐂'},
+    {arabic:'ثمرة',french:'Fruit',emoji:'🍑'},
+    {arabic:'ثعبان',french:'Serpent',emoji:'🐍'},
+    {arabic:'ثوب',french:'Habit',emoji:'👗'},
+    {arabic:'ثروة',french:'Richesse',emoji:'💰'},
+    {arabic:'ثلاجة',french:'Réfrigérateur',emoji:'🧊'},
+    {arabic:'ثقيل',french:'Lourd',emoji:'🏋️'},
+    {arabic:'ثانية',french:'Seconde',emoji:'⏱️'},
+    {arabic:'ثمانية',french:'Huit',emoji:'8️⃣'},
+    {arabic:'ثدي',french:'Mamelle',emoji:'🐄'},
+    {arabic:'ثنائي',french:'Duo',emoji:'👯'},
+    {arabic:'ثبات',french:'Stabilité',emoji:'⚓'},
+    {arabic:'ثرثرة',french:'Bavardage',emoji:'💬'},
+  ],
+  'ج':[
+    {arabic:'جمل',french:'Chameau',emoji:'🐪'},
+    {arabic:'جزرة',french:'Carotte',emoji:'🥕'},
+    {arabic:'جبل',french:'Montagne',emoji:'⛰️'},
+    {arabic:'جوز',french:'Noix',emoji:'🥜'},
+    {arabic:'جاموس',french:'Buffle',emoji:'🦬'},
+    {arabic:'جسر',french:'Pont',emoji:'🌉'},
+    {arabic:'جنة',french:'Paradis',emoji:'🌺'},
+    {arabic:'جرو',french:'Chiot',emoji:'🐶'},
+    {arabic:'جرس',french:'Cloche',emoji:'🔔'},
+    {arabic:'جوارب',french:'Chaussettes',emoji:'🧦'},
+    {arabic:'جراد',french:'Sauterelle',emoji:'🦗'},
+    {arabic:'جدة',french:'Grand-mère',emoji:'👵'},
+    {arabic:'جد',french:'Grand-père',emoji:'👴'},
+    {arabic:'جيب',french:'Poche',emoji:'👖'},
+    {arabic:'جبن',french:'Fromage',emoji:'🧀'},
+  ],
+  'ح':[
+    {arabic:'حصان',french:'Cheval',emoji:'🐴'},
+    {arabic:'حوت',french:'Baleine',emoji:'🐋'},
+    {arabic:'حديقة',french:'Jardin',emoji:'🌳'},
+    {arabic:'حمار',french:'Âne',emoji:'🫏'},
+    {arabic:'حقيبة',french:'Sac',emoji:'👜'},
+    {arabic:'حليب',french:'Lait',emoji:'🥛'},
+    {arabic:'حمام',french:'Pigeon',emoji:'🕊️'},
+    {arabic:'حلوى',french:'Bonbon',emoji:'🍬'},
+    {arabic:'حنفية',french:'Robinet',emoji:'🚰'},
+    {arabic:'حذاء',french:'Chaussure',emoji:'👟'},
+    {arabic:'حريق',french:'Incendie',emoji:'🔥'},
+    {arabic:'حوض',french:'Bassin',emoji:'🛁'},
+    {arabic:'حرباء',french:'Caméléon',emoji:'🦎'},
+    {arabic:'حمراء',french:'Rouge',emoji:'🔴'},
+    {arabic:'حكاية',french:'Histoire',emoji:'📖'},
+  ],
+  'خ':[
+    {arabic:'خروف',french:'Mouton',emoji:'🐑'},
+    {arabic:'خبز',french:'Pain',emoji:'🍞'},
+    {arabic:'خيار',french:'Concombre',emoji:'🥒'},
+    {arabic:'خفاش',french:'Chauve-souris',emoji:'🦇'},
+    {arabic:'خريطة',french:'Carte',emoji:'🗺️'},
+    {arabic:'خنزير',french:'Cochon',emoji:'🐷'},
+    {arabic:'خاتم',french:'Bague',emoji:'💍'},
+    {arabic:'خيول',french:'Chevaux',emoji:'🐎'},
+    {arabic:'خلية',french:'Ruche',emoji:'🍯'},
+    {arabic:'خطاف',french:'Hirondelle',emoji:'🐦'},
+    {arabic:'خضراوات',french:'Légumes',emoji:'🥦'},
+    {arabic:'خزانة',french:'Armoire',emoji:'🚪'},
+    {arabic:'خيمة',french:'Tente',emoji:'⛺'},
+    {arabic:'خريف',french:'Automne',emoji:'🍂'},
+    {arabic:'خيط',french:'Fil',emoji:'🧵'},
+  ],
+  'د':[
+    {arabic:'دجاجة',french:'Poule',emoji:'🐔'},
+    {arabic:'دب',french:'Ours',emoji:'🐻'},
+    {arabic:'دلفين',french:'Dauphin',emoji:'🐬'},
+    {arabic:'دراجة',french:'Vélo',emoji:'🚲'},
+    {arabic:'دفتر',french:'Cahier',emoji:'📓'},
+    {arabic:'دم',french:'Sang',emoji:'🩸'},
+    {arabic:'دواء',french:'Médicament',emoji:'💊'},
+    {arabic:'دجال',french:'Trompeur',emoji:'🤥'},
+    {arabic:'ديك',french:'Coq',emoji:'🐓'},
+    {arabic:'دلو',french:'Seau',emoji:'🪣'},
+    {arabic:'درع',french:'Bouclier',emoji:'🛡️'},
+    {arabic:'دموع',french:'Larmes',emoji:'😢'},
+    {arabic:'دراما',french:'Drame',emoji:'🎭'},
+    {arabic:'دودة',french:'Ver',emoji:'🐛'},
+    {arabic:'دنيا',french:'Monde',emoji:'🌍'},
+  ],
+  'ذ':[
+    {arabic:'ذئب',french:'Loup',emoji:'🐺'},
+    {arabic:'ذرة',french:'Maïs',emoji:'🌽'},
+    {arabic:'ذهب',french:'Or',emoji:'✨'},
+    {arabic:'ذباب',french:'Mouche',emoji:'🪰'},
+    {arabic:'ذيل',french:'Queue',emoji:'🦊'},
+    {arabic:'ذاكرة',french:'Mémoire',emoji:'🧠'},
+    {arabic:'ذرى',french:'Sommet',emoji:'🏔️'},
+    {arabic:'ذبابة',french:'Moucheron',emoji:'🪲'},
+    {arabic:'ذكاء',french:'Intelligence',emoji:'💡'},
+    {arabic:'ذراع',french:'Bras',emoji:'💪'},
+    {arabic:'ذقن',french:'Menton',emoji:'🤔'},
+    {arabic:'ذبيحة',french:'Sacrifice',emoji:'🐑'},
+    {arabic:'ذرة شامية',french:'Maïs soufflé',emoji:'🍿'},
+    {arabic:'ذهاب',french:'Départ',emoji:'🚶'},
+    {arabic:'ذكر',french:'Mâle',emoji:'♂️'},
+  ],
+  'ر':[
+    {arabic:'رمان',french:'Grenade',emoji:'🍎'},
+    {arabic:'روبوت',french:'Robot',emoji:'🤖'},
+    {arabic:'ربيع',french:'Printemps',emoji:'🌸'},
+    {arabic:'ريح',french:'Vent',emoji:'💨'},
+    {arabic:'رسام',french:'Peintre',emoji:'🎨'},
+    {arabic:'رجل',french:'Homme',emoji:'👨'},
+    {arabic:'رياضة',french:'Sport',emoji:'⚽'},
+    {arabic:'رسالة',french:'Lettre',emoji:'✉️'},
+    {arabic:'رمل',french:'Sable',emoji:'🏖️'},
+    {arabic:'ركوب',french:'Équitation',emoji:'🏇'},
+    {arabic:'رعد',french:'Tonnerre',emoji:'⛈️'},
+    {arabic:'رحلة',french:'Voyage',emoji:'✈️'},
+    {arabic:'رقم',french:'Numéro',emoji:'🔢'},
+    {arabic:'رمضان',french:'Ramadan',emoji:'🌙'},
+    {arabic:'رصيف',french:'Trottoir',emoji:'🚶'},
+  ],
+  'ز':[
+    {arabic:'زرافة',french:'Girafe',emoji:'🦒'},
+    {arabic:'زهرة',french:'Fleur',emoji:'🌸'},
+    {arabic:'زيتون',french:'Olive',emoji:'🫒'},
+    {arabic:'زبيب',french:'Raisin sec',emoji:'🍇'},
+    {arabic:'زجاجة',french:'Bouteille',emoji:'🍶'},
+    {arabic:'زبدة',french:'Beurre',emoji:'🧈'},
+    {arabic:'زيت',french:'Huile',emoji:'🫙'},
+    {arabic:'زلزال',french:'Tremblement',emoji:'🌋'},
+    {arabic:'زواج',french:'Mariage',emoji:'💒'},
+    {arabic:'زنبرك',french:'Ressort',emoji:'🌀'},
+    {arabic:'زرزور',french:'Étourneau',emoji:'🐦'},
+    {arabic:'زعيم',french:'Chef',emoji:'👑'},
+    {arabic:'زقاق',french:'Ruelle',emoji:'🏘️'},
+    {arabic:'زنبق',french:'Lis',emoji:'💐'},
+    {arabic:'زمرد',french:'Émeraude',emoji:'💚'},
+  ],
+  'س':[
+    {arabic:'سمكة',french:'Poisson',emoji:'🐟'},
+    {arabic:'سلحفاة',french:'Tortue',emoji:'🐢'},
+    {arabic:'سيارة',french:'Voiture',emoji:'🚗'},
+    {arabic:'سماء',french:'Ciel',emoji:'☁️'},
+    {arabic:'سكين',french:'Couteau',emoji:'🔪'},
+    {arabic:'سيف',french:'Épée',emoji:'⚔️'},
+    {arabic:'سحابة',french:'Nuage',emoji:'⛅'},
+    {arabic:'سلة',french:'Panier',emoji:'🧺'},
+    {arabic:'سمع',french:'Ouïe',emoji:'👂'},
+    {arabic:'سؤال',french:'Question',emoji:'❓'},
+    {arabic:'سهم',french:'Flèche',emoji:'🏹'},
+    {arabic:'سباحة',french:'Natation',emoji:'🏊'},
+    {arabic:'سرير',french:'Lit',emoji:'🛏️'},
+    {arabic:'ساعة',french:'Montre',emoji:'⌚'},
+    {arabic:'سلم',french:'Escalier',emoji:'🪜'},
+  ],
+  'ش':[
+    {arabic:'شمس',french:'Soleil',emoji:'☀️'},
+    {arabic:'شجرة',french:'Arbre',emoji:'🌲'},
+    {arabic:'شاحنة',french:'Camion',emoji:'🚛'},
+    {arabic:'شاة',french:'Brebis',emoji:'🐑'},
+    {arabic:'شوكولا',french:'Chocolat',emoji:'🍫'},
+    {arabic:'شاطئ',french:'Plage',emoji:'🏖️'},
+    {arabic:'شبكة',french:'Filet',emoji:'🕸️'},
+    {arabic:'شمعة',french:'Bougie',emoji:'🕯️'},
+    {arabic:'شرطي',french:'Policier',emoji:'👮'},
+    {arabic:'شفاه',french:'Lèvres',emoji:'💋'},
+    {arabic:'شتاء',french:'Hiver',emoji:'☃️'},
+    {arabic:'شرفة',french:'Balcon',emoji:'🏠'},
+    {arabic:'شهر',french:'Mois',emoji:'📅'},
+    {arabic:'شريط',french:'Ruban',emoji:'🎀'},
+    {arabic:'شحنة',french:'Cargaison',emoji:'📦'},
+  ],
+  'ص':[
+    {arabic:'صقر',french:'Faucon',emoji:'🦅'},
+    {arabic:'صاروخ',french:'Fusée',emoji:'🚀'},
+    {arabic:'صبار',french:'Cactus',emoji:'🌵'},
+    {arabic:'صندوق',french:'Boîte',emoji:'📦'},
+    {arabic:'صحن',french:'Assiette',emoji:'🍽️'},
+    {arabic:'صديق',french:'Ami',emoji:'🤝'},
+    {arabic:'صورة',french:'Photo',emoji:'📸'},
+    {arabic:'صلاة',french:'Prière',emoji:'🙏'},
+    {arabic:'صبح',french:'Matin',emoji:'🌅'},
+    {arabic:'صوت',french:'Voix',emoji:'🔊'},
+    {arabic:'صيف',french:'Été',emoji:'🌞'},
+    {arabic:'صابون',french:'Savon',emoji:'🧼'},
+    {arabic:'صنبور',french:'Robinet',emoji:'🚰'},
+    {arabic:'صرصور',french:'Cafard',emoji:'🪲'},
+    {arabic:'صومعة',french:'Minaret',emoji:'🕌'},
+  ],
+  'ض':[
+    {arabic:'ضفدع',french:'Grenouille',emoji:'🐸'},
+    {arabic:'ضوء',french:'Lumière',emoji:'💡'},
+    {arabic:'ضبع',french:'Hyène',emoji:'🦁'},
+    {arabic:'ضرس',french:'Dent',emoji:'🦷'},
+    {arabic:'ضباب',french:'Brouillard',emoji:'🌫️'},
+    {arabic:'ضيف',french:'Invité',emoji:'🧑‍🤝‍🧑'},
+    {arabic:'ضهر',french:'Midi',emoji:'🌞'},
+    {arabic:'ضمادة',french:'Pansement',emoji:'🩹'},
+    {arabic:'ضفيرة',french:'Tresse',emoji:'💇'},
+    {arabic:'ضحك',french:'Rire',emoji:'😂'},
+    {arabic:'ضخم',french:'Énorme',emoji:'🐘'},
+    {arabic:'ضياع',french:'Perte',emoji:'😔'},
+    {arabic:'ضابط',french:'Officier',emoji:'🎖️'},
+    {arabic:'ضرب',french:'Frappe',emoji:'👊'},
+    {arabic:'ضرورة',french:'Nécessité',emoji:'❗'},
+  ],
+  'ط':[
+    {arabic:'طائر',french:'Oiseau',emoji:'🐦'},
+    {arabic:'طاولة',french:'Table',emoji:'🪑'},
+    {arabic:'طماطم',french:'Tomate',emoji:'🍅'},
+    {arabic:'طيارة',french:'Avion',emoji:'✈️'},
+    {arabic:'طفل',french:'Enfant',emoji:'👶'},
+    {arabic:'طبيب',french:'Médecin',emoji:'👨‍⚕️'},
+    {arabic:'طبلة',french:'Tambour',emoji:'🥁'},
+    {arabic:'طاحونة',french:'Moulin',emoji:'🌾'},
+    {arabic:'طيف',french:'Arc-en-ciel',emoji:'🌈'},
+    {arabic:'طرطوشة',french:'Arrosoir',emoji:'🪣'},
+    {arabic:'طاووس',french:'Paon',emoji:'🦚'},
+    {arabic:'طريق',french:'Route',emoji:'🛣️'},
+    {arabic:'طابع',french:'Timbre',emoji:'📮'},
+    {arabic:'طحين',french:'Farine',emoji:'🌾'},
+    {arabic:'طنجرة',french:'Marmite',emoji:'🫕'},
+  ],
+  'ظ':[
+    {arabic:'ظرف',french:'Enveloppe',emoji:'✉️'},
+    {arabic:'ظبي',french:'Gazelle',emoji:'🦌'},
+    {arabic:'ظل',french:'Ombre',emoji:'🌑'},
+    {arabic:'ظهر',french:'Dos',emoji:'🏃'},
+    {arabic:'ظفر',french:'Ongle',emoji:'💅'},
+    {arabic:'ظلام',french:'Obscurité',emoji:'🌚'},
+    {arabic:'ظاهرة',french:'Phénomène',emoji:'🌪️'},
+    {arabic:'ظمأ',french:'Soif',emoji:'💧'},
+    {arabic:'ظرف',french:'Circonstance',emoji:'⚖️'},
+    {arabic:'ظريف',french:'Drôle',emoji:'😄'},
+    {arabic:'ظبية',french:'Biche',emoji:'🦌'},
+    {arabic:'ظلع',french:'Côte',emoji:'🦴'},
+    {arabic:'ظروف',french:'Conditions',emoji:'📋'},
+    {arabic:'ظهيرة',french:'Midi',emoji:'☀️'},
+    {arabic:'ظافر',french:'Vainqueur',emoji:'🏆'},
+  ],
+  'ع':[
+    {arabic:'عصفور',french:'Moineau',emoji:'🐦'},
+    {arabic:'عنب',french:'Raisin',emoji:'🍇'},
+    {arabic:'عقرب',french:'Scorpion',emoji:'🦂'},
+    {arabic:'علم',french:'Drapeau',emoji:'🚩'},
+    {arabic:'عسل',french:'Miel',emoji:'🍯'},
+    {arabic:'عين',french:'Œil',emoji:'👁️'},
+    {arabic:'عنكبوت',french:'Araignée',emoji:'🕷️'},
+    {arabic:'عروس',french:'Mariée',emoji:'👰'},
+    {arabic:'عصا',french:'Bâton',emoji:'🪄'},
+    {arabic:'عجل',french:'Veau',emoji:'🐄'},
+    {arabic:'عصير',french:'Jus',emoji:'🥤'},
+    {arabic:'علبة',french:'Boîte',emoji:'📦'},
+    {arabic:'عطر',french:'Parfum',emoji:'🌹'},
+    {arabic:'عاصفة',french:'Tempête',emoji:'🌪️'},
+    {arabic:'عالم',french:'Monde',emoji:'🌍'},
+  ],
+  'غ':[
+    {arabic:'غزال',french:'Gazelle',emoji:'🦌'},
+    {arabic:'غيمة',french:'Nuage',emoji:'⛅'},
+    {arabic:'غوريلا',french:'Gorille',emoji:'🦍'},
+    {arabic:'غراب',french:'Corbeau',emoji:'🐦‍⬛'},
+    {arabic:'غيتار',french:'Guitare',emoji:'🎸'},
+    {arabic:'غابة',french:'Forêt',emoji:'🌲'},
+    {arabic:'غسيل',french:'Lessive',emoji:'🧺'},
+    {arabic:'غرفة',french:'Chambre',emoji:'🛏️'},
+    {arabic:'غداء',french:'Déjeuner',emoji:'🍽️'},
+    {arabic:'غرق',french:'Noyade',emoji:'🌊'},
+    {arabic:'غناء',french:'Chant',emoji:'🎵'},
+    {arabic:'غضب',french:'Colère',emoji:'😡'},
+    {arabic:'غنم',french:'Brebis',emoji:'🐑'},
+    {arabic:'غيب',french:'Absence',emoji:'👻'},
+    {arabic:'غريب',french:'Étrange',emoji:'🤔'},
+  ],
+  'ف':[
+    {arabic:'فيل',french:'Éléphant',emoji:'🐘'},
+    {arabic:'فراشة',french:'Papillon',emoji:'🦋'},
+    {arabic:'فأر',french:'Souris',emoji:'🐭'},
+    {arabic:'فيلم',french:'Film',emoji:'🎬'},
+    {arabic:'فاكهة',french:'Fruit',emoji:'🍓'},
+    {arabic:'فنجان',french:'Tasse',emoji:'☕'},
+    {arabic:'فطر',french:'Champignon',emoji:'🍄'},
+    {arabic:'فلفل',french:'Poivron',emoji:'🫑'},
+    {arabic:'فخ',french:'Piège',emoji:'🪤'},
+    {arabic:'فنار',french:'Phare',emoji:'🏮'},
+    {arabic:'فرح',french:'Joie',emoji:'😊'},
+    {arabic:'فراولة',french:'Fraise',emoji:'🍓'},
+    {arabic:'فقمة',french:'Phoque',emoji:'🦭'},
+    {arabic:'فلك',french:'Astronomie',emoji:'🌠'},
+    {arabic:'فصل',french:'Saison',emoji:'🌿'},
+  ],
+  'ق':[
+    {arabic:'قط',french:'Chat',emoji:'🐱'},
+    {arabic:'قمر',french:'Lune',emoji:'🌙'},
+    {arabic:'قرد',french:'Singe',emoji:'🐒'},
+    {arabic:'قنفذ',french:'Hérisson',emoji:'🦔'},
+    {arabic:'قوس قزح',french:'Arc-en-ciel',emoji:'🌈'},
+    {arabic:'قلب',french:'Cœur',emoji:'❤️'},
+    {arabic:'قلم',french:'Stylo',emoji:'✏️'},
+    {arabic:'قرش',french:'Requin',emoji:'🦈'},
+    {arabic:'قندل',french:'Bougie',emoji:'🕯️'},
+    {arabic:'قهوة',french:'Café',emoji:'☕'},
+    {arabic:'قبة',french:'Dôme',emoji:'🕌'},
+    {arabic:'قصة',french:'Histoire',emoji:'📖'},
+    {arabic:'قرآن',french:'Coran',emoji:'📗'},
+    {arabic:'قفز',french:'Saut',emoji:'🏃'},
+    {arabic:'قلاع',french:'Château',emoji:'🏰'},
+  ],
+  'ك':[
+    {arabic:'كلب',french:'Chien',emoji:'🐶'},
+    {arabic:'كتاب',french:'Livre',emoji:'📚'},
+    {arabic:'كعكة',french:'Gâteau',emoji:'🎂'},
+    {arabic:'كرة',french:'Ballon',emoji:'⚽'},
+    {arabic:'كرسي',french:'Chaise',emoji:'🪑'},
+    {arabic:'كوب',french:'Tasse',emoji:'🥤'},
+    {arabic:'كيس',french:'Sac',emoji:'👜'},
+    {arabic:'كمبيوتر',french:'Ordinateur',emoji:'💻'},
+    {arabic:'كنغر',french:'Kangourou',emoji:'🦘'},
+    {arabic:'كوكب',french:'Planète',emoji:'🪐'},
+    {arabic:'كرز',french:'Cerise',emoji:'🍒'},
+    {arabic:'كتف',french:'Épaule',emoji:'💪'},
+    {arabic:'كمان',french:'Violon',emoji:'🎻'},
+    {arabic:'كهف',french:'Grotte',emoji:'⛰️'},
+    {arabic:'كلمة',french:'Mot',emoji:'💬'},
+  ],
+  'ل':[
+    {arabic:'لبن',french:'Lait',emoji:'🥛'},
+    {arabic:'لعبة',french:'Jouet',emoji:'🧸'},
+    {arabic:'لون',french:'Couleur',emoji:'🎨'},
+    {arabic:'ليمون',french:'Citron',emoji:'🍋'},
+    {arabic:'لقلق',french:'Cigogne',emoji:'🦩'},
+    {arabic:'لسان',french:'Langue',emoji:'👅'},
+    {arabic:'ليل',french:'Nuit',emoji:'🌙'},
+    {arabic:'لؤلؤ',french:'Perle',emoji:'🫧'},
+    {arabic:'لباس',french:'Vêtement',emoji:'👕'},
+    {arabic:'لفت',french:'Navet',emoji:'🌿'},
+    {arabic:'لحم',french:'Viande',emoji:'🥩'},
+    {arabic:'لاعب',french:'Joueur',emoji:'⚽'},
+    {arabic:'لغة',french:'Langue',emoji:'🗣️'},
+    {arabic:'لوز',french:'Amande',emoji:'🌰'},
+    {arabic:'لحية',french:'Barbe',emoji:'🧔'},
+  ],
+  'م':[
+    {arabic:'منزل',french:'Maison',emoji:'🏡'},
+    {arabic:'موزة',french:'Banane',emoji:'🍌'},
+    {arabic:'مدرسة',french:'École',emoji:'🏫'},
+    {arabic:'مطر',french:'Pluie',emoji:'🌧️'},
+    {arabic:'مفتاح',french:'Clé',emoji:'🔑'},
+    {arabic:'مطبخ',french:'Cuisine',emoji:'🍳'},
+    {arabic:'مسجد',french:'Mosquée',emoji:'🕌'},
+    {arabic:'ملعقة',french:'Cuillère',emoji:'🥄'},
+    {arabic:'ميزان',french:'Balance',emoji:'⚖️'},
+    {arabic:'مغني',french:'Chanteur',emoji:'🎤'},
+    {arabic:'مروحة',french:'Ventilateur',emoji:'🌀'},
+    {arabic:'ملابس',french:'Habits',emoji:'👗'},
+    {arabic:'مطار',french:'Aéroport',emoji:'✈️'},
+    {arabic:'مكتبة',french:'Bibliothèque',emoji:'📚'},
+    {arabic:'مسبح',french:'Piscine',emoji:'🏊'},
+  ],
+  'ن':[
+    {arabic:'نجمة',french:'Étoile',emoji:'⭐'},
+    {arabic:'نملة',french:'Fourmi',emoji:'🐜'},
+    {arabic:'نمر',french:'Tigre',emoji:'🐯'},
+    {arabic:'نسر',french:'Aigle',emoji:'🦅'},
+    {arabic:'نهر',french:'Rivière',emoji:'🏞️'},
+    {arabic:'نور',french:'Lumière',emoji:'💡'},
+    {arabic:'نحلة',french:'Abeille',emoji:'🐝'},
+    {arabic:'نافذة',french:'Fenêtre',emoji:'🪟'},
+    {arabic:'نوم',french:'Sommeil',emoji:'😴'},
+    {arabic:'نعامة',french:'Autruche',emoji:'🦤'},
+    {arabic:'نشرة',french:'Bulletin',emoji:'📰'},
+    {arabic:'نهاية',french:'Fin',emoji:'🏁'},
+    {arabic:'نظارة',french:'Lunettes',emoji:'👓'},
+    {arabic:'نخلة',french:'Palmier',emoji:'🌴'},
+    {arabic:'نرجس',french:'Narcisse',emoji:'🌼'},
+  ],
+  'ه':[
+    {arabic:'هدية',french:'Cadeau',emoji:'🎁'},
+    {arabic:'هرة',french:'Chatte',emoji:'🐈'},
+    {arabic:'هاتف',french:'Téléphone',emoji:'📞'},
+    {arabic:'هلال',french:'Croissant',emoji:'🌙'},
+    {arabic:'هواء',french:'Air',emoji:'💨'},
+    {arabic:'هرم',french:'Pyramide',emoji:'🔺'},
+    {arabic:'هدف',french:'But',emoji:'🎯'},
+    {arabic:'هضبة',french:'Plateau',emoji:'🏔️'},
+    {arabic:'هوية',french:'Identité',emoji:'🪪'},
+    {arabic:'هندسة',french:'Géométrie',emoji:'📐'},
+    {arabic:'هيكل',french:'Squelette',emoji:'💀'},
+    {arabic:'هجرة',french:'Migration',emoji:'✈️'},
+    {arabic:'همس',french:'Chuchotement',emoji:'🤫'},
+    {arabic:'هلع',french:'Panique',emoji:'😨'},
+    {arabic:'هنيئا',french:'Félicitations',emoji:'🎉'},
+  ],
+  'و':[
+    {arabic:'وردة',french:'Rose',emoji:'🌹'},
+    {arabic:'ورقة',french:'Feuille',emoji:'🍃'},
+    {arabic:'وحش',french:'Monstre',emoji:'👹'},
+    {arabic:'ولد',french:'Garçon',emoji:'👦'},
+    {arabic:'واحة',french:'Oasis',emoji:'🏝️'},
+    {arabic:'وقت',french:'Temps',emoji:'⏰'},
+    {arabic:'وعل',french:'Bouquetin',emoji:'🦌'},
+    {arabic:'وطن',french:'Patrie',emoji:'🏳️'},
+    {arabic:'وسادة',french:'Oreiller',emoji:'🛏️'},
+    {arabic:'وجه',french:'Visage',emoji:'😊'},
+    {arabic:'ودّ',french:'Amitié',emoji:'💕'},
+    {arabic:'وضوء',french:'Ablution',emoji:'🚿'},
+    {arabic:'وكيل',french:'Agent',emoji:'🕵️'},
+    {arabic:'وليمة',french:'Festin',emoji:'🎉'},
+    {arabic:'وحيد القرن',french:'Licorne',emoji:'🦄'},
+  ],
+  'ي':[
+    {arabic:'يد',french:'Main',emoji:'✋'},
+    {arabic:'يمامة',french:'Colombe',emoji:'🕊️'},
+    {arabic:'يسار',french:'Gauche',emoji:'⬅️'},
+    {arabic:'ياقوت',french:'Rubis',emoji:'💎'},
+    {arabic:'يرقة',french:'Chenille',emoji:'🐛'},
+    {arabic:'يوم',french:'Jour',emoji:'☀️'},
+    {arabic:'يقين',french:'Certitude',emoji:'✅'},
+    {arabic:'ينبوع',french:'Source',emoji:'💧'},
+    {arabic:'يقطين',french:'Citrouille',emoji:'🎃'},
+    {arabic:'يتيم',french:'Orphelin',emoji:'😢'},
+    {arabic:'يخت',french:'Yacht',emoji:'⛵'},
+    {arabic:'يفاع',french:'Adolescence',emoji:'🧑'},
+    {arabic:'يقظة',french:'Éveil',emoji:'😮'},
+    {arabic:'يراع',french:'Luciole',emoji:'✨'},
+    {arabic:'يسمين',french:'Jasmin',emoji:'🌸'},
+  ],
+};
+
+const COLORS=['#FF6B6B','#FF9800','#4CAF50','#00BCD4','#9C27B0','#2196F3','#FF5722','#8BC34A'];
+
+// =====================================================
+// ÉTAT
+// =====================================================
+let currentLetter=null;
+let stars=0;
+// QCM
+let qcmQ=[],qcmIdx=0,qcmScore=0,qcmAnswered=false;
+// Missing
+let missingQ=[],missingIdx=0,missingScore=0;
+// Memory
+let memCards=[],memFlipped=[],memMatched=0,memTries=0,memLocked=false;
+// Speed
+let speedQ=[],speedIdx=0,speedScore=0,speedTimer=null,speedTimeLeft=0,speedDone=false;
+
+// =====================================================
+// AUDIO
+// =====================================================
+const audioCache={};
+function playArabic(text){
+  if(audioCache[text]){audioCache[text].currentTime=0;audioCache[text].play().catch(()=>fallback(text));return;}
+  const url='https://translate.google.com/translate_tts?ie=UTF-8&tl=ar&client=tw-ob&q='+encodeURIComponent(text);
+  const a=new Audio(url);
+  audioCache[text]=a;
+  a.play().catch(()=>fallback(text));
+}
+function fallback(text){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='ar-SA';u.rate=0.8;
+  window.speechSynthesis.speak(u);
+}
+
+// =====================================================
+// NAVIGATION
+// =====================================================
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='big-stories') bsShowGrid();
+  if(name==='phrases-menu') phShowLevels();
+}
+
+// =====================================================
+// INIT LETTRES
+// =====================================================
+function init(){
+  const g=document.getElementById('lettersGrid');
+  LETTERS.forEach(l=>{
+    const b=document.createElement('button');
+    b.className='lbtn';
+    b.innerHTML=`<span class="ar">${l.letter}</span><span class="lat">${l.name}</span><div class="colorbar" style="background:${l.color}"></div>`;
+    b.onclick=()=>selectLetter(l);
+    g.appendChild(b);
+  });
+}
+
+function selectLetter(l){
+  currentLetter=l;
+  document.getElementById('selectedLetterInfo').textContent=l.letter;
+  document.getElementById('bigLetter').textContent=l.letter;
+  document.getElementById('letterLabel').textContent=l.arabicName+' — '+l.name;
+  buildWordsGrid(l);
+  showScreen('words');
+  playArabic(l.arabicName);
+  animateLetter();
+}
+
+function replayLetter(){
+  if(!currentLetter)return;
+  playArabic(currentLetter.arabicName);
+  animateLetter();
+}
+
+function animateLetter(){
+  const el=document.getElementById('bigLetter');
+  el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');
+  setTimeout(()=>el.classList.remove('pop'),600);
+}
+
+// =====================================================
+// MOTS GRID
+// =====================================================
+function buildWordsGrid(l){
+  const g=document.getElementById('wordsGrid');g.innerHTML='';
+  (WORDS[l.letter]||[]).forEach((w,i)=>{
+    const c=COLORS[i%COLORS.length];
+    const card=document.createElement('button');
+    card.className='wcard';
+    card.innerHTML=`<div class="top-stripe" style="background:${c}"></div>
+      <span class="emoji">${w.emoji}</span>
+      <span class="ar-word">${w.arabic}</span>
+      <span class="fr-word">${w.french}</span>
+      <div class="sbars hidden" id="sb${i}">
+        ${[0,1,2,3].map(j=>`<div class="sbar" style="background:${c};animation-delay:${j*0.1}s"></div>`).join('')}
+      </div>`;
+    card.style.borderColor='transparent';
+    card.onclick=()=>{
+      document.querySelectorAll('.wcard').forEach((x,j)=>{x.style.borderColor='transparent';x.classList.remove('playing');const sb=document.getElementById('sb'+j);if(sb)sb.classList.add('hidden');});
+      card.style.borderColor=c;card.classList.add('playing');
+      document.getElementById('sb'+i).classList.remove('hidden');
+      playArabic(w.arabic);
+      setTimeout(()=>{card.style.borderColor='transparent';card.classList.remove('playing');document.getElementById('sb'+i).classList.add('hidden');},2500);
+    };
+    g.appendChild(card);
+  });
+}
+
+// =====================================================
+// JEU : QCM
+// =====================================================
+function requireLetter(game){
+  if(!currentLetter){alert('Choisis d\'abord une lettre !');showScreen('letters');return;}
+  if(game==='qcm')startQCM();
+  else if(game==='missing')startMissingLetter();
+  else if(game==='memory')startMemory();
+  else if(game==='speed')startSpeed();
+}
+
+function startQCM(){
+  const words=WORDS[currentLetter.letter]||[];
+  const allWords=Object.values(WORDS).flat();
+  qcmQ=words.map(w=>{
+    const wrong=allWords.filter(x=>x.arabic!==w.arabic).sort(()=>Math.random()-0.5).slice(0,3);
+    const answers=[w,...wrong].sort(()=>Math.random()-0.5);
+    return{correct:w,answers,type:Math.random()>0.5?'emoji':'word'};
+  });
+  qcmIdx=0;qcmScore=0;qcmAnswered=false;
+  document.getElementById('qcmBackBtn').onclick=()=>showScreen('words');
+  showScreen('qcm');
+  renderQCM();
+}
+
+function renderQCM(){
+  qcmAnswered=false;
+  const q=qcmQ[qcmIdx];
+  const total=qcmQ.length;
+  document.getElementById('qcmTitle').textContent=`✏️ Question ${qcmIdx+1} / ${total}`;
+  document.getElementById('qcmProgress').style.width=((qcmIdx/total)*100)+'%';
+  document.getElementById('qcmFeedback').className='hidden';
+  document.getElementById('qcmNext').className='next-btn hidden';
+  const area=document.getElementById('qcmArea');
+  if(q.type==='emoji'){
+    area.innerHTML=`<div class="qlabel">Quel mot arabe correspond à cette image ?</div>
+      <span class="big-emoji">${q.correct.emoji}</span>
+      <span class="small-fr">${q.correct.french}</span>
+      <div class="answers-grid" id="qcmGrid"></div>`;
+    q.answers.forEach(a=>{
+      const b=document.createElement('button');b.className='abtn';b.textContent=a.arabic;
+      b.onclick=()=>checkQCM(b,a,q);document.getElementById('qcmGrid').appendChild(b);
+    });
+  }else{
+    area.innerHTML=`<div class="qlabel">Quelle image correspond à ce mot arabe ?</div>
+      <span class="big-arabic" onclick="playArabic('${q.correct.arabic}')">${q.correct.arabic} 🔊</span>
+      <span class="small-fr">${q.correct.french}</span>
+      <div class="answers-grid" id="qcmGrid"></div>`;
+    q.answers.forEach(a=>{
+      const b=document.createElement('button');b.className='abtn ebtn';b.textContent=a.emoji;
+      b.onclick=()=>checkQCM(b,a,q);document.getElementById('qcmGrid').appendChild(b);
+    });
+  }
+}
+
+function checkQCM(btn,answer,q){
+  if(qcmAnswered)return;qcmAnswered=true;
+  const ok=answer.arabic===q.correct.arabic;
+  document.querySelectorAll('#qcmGrid .abtn').forEach(b=>{
+    b.disabled=true;
+    const isC=(q.type==='emoji')?b.textContent===q.correct.arabic:b.textContent===q.correct.emoji;
+    if(isC)b.classList.add('correct');
+  });
+  if(!ok)btn.classList.add('wrong');
+  playArabic(q.correct.arabic);
+  if(ok){qcmScore++;addStar();}
+  const fb=document.getElementById('qcmFeedback');
+  fb.className='feedback '+(ok?'good':'bad');
+  fb.textContent=ok?'🎉 Bravo ! Super bonne réponse !':'😅 La bonne réponse : '+q.correct.arabic+' '+q.correct.emoji;
+  const nb=document.getElementById('qcmNext');
+  nb.className='next-btn';
+  nb.textContent=(qcmIdx+1>=qcmQ.length)?'🏁 Voir mon score !':'Suivant →';
+}
+
+function nextQCM(){
+  qcmIdx++;
+  if(qcmIdx>=qcmQ.length)showGameResults('QCM',qcmScore,qcmQ.length,'startQCM');
+  else renderQCM();
+}
+
+// =====================================================
+// JEU : LETTRE MANQUANTE
+// =====================================================
+function startMissingLetter(){
+  const words=WORDS[currentLetter.letter]||[];
+  missingQ=[...words].sort(()=>Math.random()-0.5);
+  missingIdx=0;missingScore=0;
+  showScreen('missing');
+  renderMissing();
+}
+
+function renderMissing(){
+  const q=missingQ[missingIdx];
+  const total=missingQ.length;
+  document.getElementById('missingTitle').textContent=`🔡 Lettre manquante ${missingIdx+1}/${total}`;
+  document.getElementById('missingProgress').style.width=((missingIdx/total)*100)+'%';
+  document.getElementById('missingEmoji').textContent=q.emoji;
+  document.getElementById('missingFr').textContent=q.french;
+  document.getElementById('missingFeedback').className='hidden';
+  document.getElementById('missingNext').className='next-btn hidden';
+  // Choisir une lettre à cacher dans le mot
+  const word=q.arabic;
+  const idx=Math.floor(Math.random()*word.length);
+  const missingChar=word[idx];
+  // Afficher le mot avec le trou
+  let display='';
+  for(let i=0;i<word.length;i++){
+    if(i===idx)display+='<span class="blank"></span>';
+    else display+=`<span style="font-family:'Noto Naskh Arabic',serif;font-size:52px">${word[i]}</span>`;
+  }
+  document.getElementById('missingWord').innerHTML=display;
+  playArabic(word);
+  // Générer les choix de lettres (bonne + 5 distracteurs)
+  const allLetters=['أ','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','ه','و','ي'];
+  const distractors=allLetters.filter(l=>l!==missingChar).sort(()=>Math.random()-0.5).slice(0,5);
+  const choices=[missingChar,...distractors].sort(()=>Math.random()-0.5);
+  const choicesDiv=document.getElementById('letterChoices');choicesDiv.innerHTML='';
+  choices.forEach(ch=>{
+    const b=document.createElement('button');b.className='lchoice';b.textContent=ch;
+    b.onclick=()=>{
+      document.querySelectorAll('.lchoice').forEach(x=>x.disabled=true);
+      const ok=ch===missingChar;
+      b.classList.add(ok?'correct':'wrong');
+      if(!ok){
+        document.querySelectorAll('.lchoice').forEach(x=>{if(x.textContent===missingChar)x.classList.add('correct');});
+      }
+      const fb=document.getElementById('missingFeedback');
+      fb.className='feedback '+(ok?'good':'bad');
+      fb.textContent=ok?'🎉 Bravo ! C\'est la bonne lettre !':'😅 La bonne lettre était : '+missingChar;
+      if(ok){missingScore++;addStar();}
+      document.getElementById('missingNext').className='next-btn';
+      document.getElementById('missingNext').textContent=(missingIdx+1>=missingQ.length)?'🏁 Voir mon score !':'Suivant →';
+    };
+    choicesDiv.appendChild(b);
+  });
+}
+
+function nextMissing(){
+  missingIdx++;
+  if(missingIdx>=missingQ.length)showGameResults('Lettre Manquante',missingScore,missingQ.length,'startMissingLetter');
+  else renderMissing();
+}
+
+// =====================================================
+// JEU : MEMORY
+// =====================================================
+function startMemory(){
+  const words=(WORDS[currentLetter.letter]||[]).slice(0,8);
+  memMatched=0;memTries=0;memFlipped=[];memLocked=false;
+  document.getElementById('memPairs').textContent='0';
+  document.getElementById('memTries').textContent='0';
+  document.getElementById('memoryWin').classList.add('hidden');
+  // Créer paires : mot arabe + emoji
+  const pairs=[];
+  words.forEach(w=>{
+    pairs.push({id:w.arabic,display:w.arabic,type:'arabic',word:w});
+    pairs.push({id:w.arabic,display:w.emoji,type:'emoji',word:w});
+  });
+  memCards=pairs.sort(()=>Math.random()-0.5);
+  const g=document.getElementById('memoryGrid');g.innerHTML='';
+  memCards.forEach((card,i)=>{
+    const b=document.createElement('button');
+    b.className='mem-card'+(card.type==='arabic'?' arabic-card':'');
+    b.dataset.index=i;b.dataset.id=card.id;b.dataset.type=card.type;
+    b.textContent='?';
+    b.onclick=()=>flipMemCard(b,card,i);
+    g.appendChild(b);
+  });
+  showScreen('memory');
+}
+
+function flipMemCard(btn,card,i){
+  if(memLocked||btn.classList.contains('flipped')||btn.classList.contains('matched'))return;
+  btn.textContent=card.display;
+  btn.classList.add('flipped');
+  if(card.type==='arabic')playArabic(card.word.arabic);
+  memFlipped.push({btn,card,i});
+  if(memFlipped.length===2){
+    memLocked=true;memTries++;
+    document.getElementById('memTries').textContent=memTries;
+    const[a,b2]=memFlipped;
+    if(a.card.id===b2.card.id&&a.card.type!==b2.card.type){
+      // Match !
+      setTimeout(()=>{
+        a.btn.classList.add('matched');b2.btn.classList.add('matched');
+        memFlipped=[];memLocked=false;memMatched++;
+        document.getElementById('memPairs').textContent=memMatched;
+        if(memMatched===8){
+          addStar();addStar();addStar();
+          document.getElementById('memWinMsg').textContent=`Tu as trouvé toutes les paires en ${memTries} essais ! 🎉`;
+          document.getElementById('memoryWin').classList.remove('hidden');
+        }
+      },500);
+    }else{
+      setTimeout(()=>{
+        a.btn.textContent='?';a.btn.classList.remove('flipped');
+        b2.btn.textContent='?';b2.btn.classList.remove('flipped');
+        memFlipped=[];memLocked=false;
+      },900);
+    }
+  }
+}
+
+// =====================================================
+// JEU : RAPIDITÉ
+// =====================================================
+function startSpeed(){
+  const words=WORDS[currentLetter.letter]||[];
+  const allWords=Object.values(WORDS).flat();
+  speedQ=[];
+  for(let i=0;i<20;i++){
+    const correct=words[Math.floor(Math.random()*words.length)];
+    const isTrue=Math.random()>0.4;
+    let shownEmoji=correct.emoji;
+    if(!isTrue){
+      const wrong=allWords.filter(x=>x.arabic!==correct.arabic);
+      shownEmoji=wrong[Math.floor(Math.random()*wrong.length)].emoji;
+    }
+    speedQ.push({word:correct,shownEmoji,isTrue});
+  }
+  speedIdx=0;speedScore=0;speedDone=false;
+  document.getElementById('speedScore').textContent=0;
+  document.getElementById('speedQ').textContent=1;
+  document.getElementById('speedFeedback').textContent='';
+  showScreen('speed');
+  renderSpeed();
+}
+
+function renderSpeed(){
+  if(speedIdx>=speedQ.length){stopSpeed();showGameResults('Rapidité',speedScore,speedQ.length,'startSpeed');return;}
+  const q=speedQ[speedIdx];
+  document.getElementById('speedEmoji').textContent=q.shownEmoji;
+  document.getElementById('speedWord').textContent=q.word.arabic;
+  document.getElementById('speedQ').textContent=speedIdx+1;
+  document.getElementById('speedFeedback').textContent='';
+  playArabic(q.word.arabic);
+  speedTimeLeft=100;
+  document.getElementById('speedTimerFill').style.width='100%';
+  clearInterval(speedTimer);
+  speedTimer=setInterval(()=>{
+    speedTimeLeft-=2;
+    document.getElementById('speedTimerFill').style.width=speedTimeLeft+'%';
+    if(speedTimeLeft<=0){
+      clearInterval(speedTimer);
+      document.getElementById('speedFeedback').textContent='⏱️ Trop lent !';
+      speedIdx++;
+      setTimeout(renderSpeed,800);
+    }
+  },100);
+}
+
+function answerSpeed(answer){
+  if(speedDone)return;
+  clearInterval(speedTimer);
+  const q=speedQ[speedIdx];
+  const ok=(answer===q.isTrue);
+  document.getElementById('speedFeedback').textContent=ok?'✅ Bien !':'❌ Raté !';
+  if(ok){speedScore++;addStar();document.getElementById('speedScore').textContent=speedScore;}
+  speedIdx++;
+  setTimeout(renderSpeed,600);
+}
+
+function stopSpeed(){speedDone=true;clearInterval(speedTimer);}
+
+// =====================================================
+// HISTOIRES — phrases très simples pour débutants
+// =====================================================
+const STORIES={
+  'أ':{
+    title:'الأسد',titleFr:'Le Lion',emoji:'🦁',
+    sentences:[
+      {ar:'هذا أسد.',fr:'C\'est un lion.',words:['أسد']},
+      {ar:'الأسد كبير.',fr:'Le lion est grand.',words:['أسد','كبير']},
+      {ar:'الأسد أصفر.',fr:'Le lion est jaune.',words:['أسد','أصفر']},
+      {ar:'أنا أحب الأسد.',fr:'J\'aime le lion.',words:['أحب','أسد']},
+      {ar:'الأسد نائم.',fr:'Le lion dort.',words:['أسد','نائم']},
+    ]
+  },
+  'ب':{
+    title:'البيت',titleFr:'La Maison',emoji:'🏠',
+    sentences:[
+      {ar:'هذا بيت.',fr:'C\'est une maison.',words:['بيت']},
+      {ar:'البيت كبير.',fr:'La maison est grande.',words:['بيت','كبير']},
+      {ar:'البيت أبيض.',fr:'La maison est blanche.',words:['بيت','أبيض']},
+      {ar:'أنا في البيت.',fr:'Je suis dans la maison.',words:['أنا','البيت']},
+      {ar:'البيت جميل.',fr:'La maison est belle.',words:['بيت','جميل']},
+    ]
+  },
+  'ت':{
+    title:'التفاحة',titleFr:'La Pomme',emoji:'🍎',
+    sentences:[
+      {ar:'هذه تفاحة.',fr:'C\'est une pomme.',words:['تفاحة']},
+      {ar:'التفاحة حمراء.',fr:'La pomme est rouge.',words:['تفاحة','حمراء']},
+      {ar:'التفاحة حلوة.',fr:'La pomme est sucrée.',words:['تفاحة','حلوة']},
+      {ar:'أنا آكل التفاحة.',fr:'Je mange la pomme.',words:['آكل','تفاحة']},
+      {ar:'التفاحة لذيذة.',fr:'La pomme est délicieuse.',words:['تفاحة','لذيذة']},
+    ]
+  },
+  'ث':{
+    title:'الثعلب',titleFr:'Le Renard',emoji:'🦊',
+    sentences:[
+      {ar:'هذا ثعلب.',fr:'C\'est un renard.',words:['ثعلب']},
+      {ar:'الثعلب برتقالي.',fr:'Le renard est orange.',words:['ثعلب','برتقالي']},
+      {ar:'الثعلب صغير.',fr:'Le renard est petit.',words:['ثعلب','صغير']},
+      {ar:'الثعلب يجري.',fr:'Le renard court.',words:['ثعلب','يجري']},
+      {ar:'الثعلب سعيد.',fr:'Le renard est content.',words:['ثعلب','سعيد']},
+    ]
+  },
+  'ج':{
+    title:'الجمل',titleFr:'Le Chameau',emoji:'🐪',
+    sentences:[
+      {ar:'هذا جمل.',fr:'C\'est un chameau.',words:['جمل']},
+      {ar:'الجمل كبير.',fr:'Le chameau est grand.',words:['جمل','كبير']},
+      {ar:'الجمل بني.',fr:'Le chameau est brun.',words:['جمل','بني']},
+      {ar:'الجمل يأكل.',fr:'Le chameau mange.',words:['جمل','يأكل']},
+      {ar:'أنا أحب الجمل.',fr:'J\'aime le chameau.',words:['أحب','جمل']},
+    ]
+  },
+  'ح':{
+    title:'الحصان',titleFr:'Le Cheval',emoji:'🐴',
+    sentences:[
+      {ar:'هذا حصان.',fr:'C\'est un cheval.',words:['حصان']},
+      {ar:'الحصان أبيض.',fr:'Le cheval est blanc.',words:['حصان','أبيض']},
+      {ar:'الحصان سريع.',fr:'Le cheval est rapide.',words:['حصان','سريع']},
+      {ar:'الحصان يجري.',fr:'Le cheval court.',words:['حصان','يجري']},
+      {ar:'الحصان جميل.',fr:'Le cheval est beau.',words:['حصان','جميل']},
+    ]
+  },
+  'خ':{
+    title:'الخروف',titleFr:'Le Mouton',emoji:'🐑',
+    sentences:[
+      {ar:'هذا خروف.',fr:'C\'est un mouton.',words:['خروف']},
+      {ar:'الخروف أبيض.',fr:'Le mouton est blanc.',words:['خروف','أبيض']},
+      {ar:'الخروف صغير.',fr:'Le mouton est petit.',words:['خروف','صغير']},
+      {ar:'الخروف يأكل.',fr:'Le mouton mange.',words:['خروف','يأكل']},
+      {ar:'الخروف لطيف.',fr:'Le mouton est gentil.',words:['خروف','لطيف']},
+    ]
+  },
+  'د':{
+    title:'الدب',titleFr:'L\'Ours',emoji:'🐻',
+    sentences:[
+      {ar:'هذا دب.',fr:'C\'est un ours.',words:['دب']},
+      {ar:'الدب بني.',fr:'L\'ours est brun.',words:['دب','بني']},
+      {ar:'الدب كبير.',fr:'L\'ours est grand.',words:['دب','كبير']},
+      {ar:'الدب ينام.',fr:'L\'ours dort.',words:['دب','ينام']},
+      {ar:'أنا أحب الدب.',fr:'J\'aime l\'ours.',words:['أحب','دب']},
+    ]
+  },
+  'ذ':{
+    title:'الذئب',titleFr:'Le Loup',emoji:'🐺',
+    sentences:[
+      {ar:'هذا ذئب.',fr:'C\'est un loup.',words:['ذئب']},
+      {ar:'الذئب رمادي.',fr:'Le loup est gris.',words:['ذئب','رمادي']},
+      {ar:'الذئب كبير.',fr:'Le loup est grand.',words:['ذئب','كبير']},
+      {ar:'الذئب يعوي.',fr:'Le loup hurle.',words:['ذئب','يعوي']},
+      {ar:'الذئب في الغابة.',fr:'Le loup est dans la forêt.',words:['ذئب','الغابة']},
+    ]
+  },
+  'ر':{
+    title:'الربيع',titleFr:'Le Printemps',emoji:'🌸',
+    sentences:[
+      {ar:'هذا ربيع.',fr:'C\'est le printemps.',words:['ربيع']},
+      {ar:'الربيع جميل.',fr:'Le printemps est beau.',words:['ربيع','جميل']},
+      {ar:'الربيع دافئ.',fr:'Le printemps est chaud.',words:['ربيع','دافئ']},
+      {ar:'أنا أحب الربيع.',fr:'J\'aime le printemps.',words:['أحب','ربيع']},
+      {ar:'الزهور في الربيع.',fr:'Les fleurs au printemps.',words:['زهور','الربيع']},
+    ]
+  },
+  'ز':{
+    title:'الزرافة',titleFr:'La Girafe',emoji:'🦒',
+    sentences:[
+      {ar:'هذه زرافة.',fr:'C\'est une girafe.',words:['زرافة']},
+      {ar:'الزرافة طويلة.',fr:'La girafe est grande.',words:['زرافة','طويلة']},
+      {ar:'الزرافة صفراء.',fr:'La girafe est jaune.',words:['زرافة','صفراء']},
+      {ar:'الزرافة تأكل.',fr:'La girafe mange.',words:['زرافة','تأكل']},
+      {ar:'أنا أحب الزرافة.',fr:'J\'aime la girafe.',words:['أحب','زرافة']},
+    ]
+  },
+  'س':{
+    title:'السمكة',titleFr:'Le Poisson',emoji:'🐟',
+    sentences:[
+      {ar:'هذه سمكة.',fr:'C\'est un poisson.',words:['سمكة']},
+      {ar:'السمكة زرقاء.',fr:'Le poisson est bleu.',words:['سمكة','زرقاء']},
+      {ar:'السمكة صغيرة.',fr:'Le poisson est petit.',words:['سمكة','صغيرة']},
+      {ar:'السمكة تسبح.',fr:'Le poisson nage.',words:['سمكة','تسبح']},
+      {ar:'أنا أحب السمكة.',fr:'J\'aime le poisson.',words:['أحب','سمكة']},
+    ]
+  },
+  'ش':{
+    title:'الشمس',titleFr:'Le Soleil',emoji:'☀️',
+    sentences:[
+      {ar:'هذه شمس.',fr:'C\'est le soleil.',words:['شمس']},
+      {ar:'الشمس صفراء.',fr:'Le soleil est jaune.',words:['شمس','صفراء']},
+      {ar:'الشمس كبيرة.',fr:'Le soleil est grand.',words:['شمس','كبيرة']},
+      {ar:'الشمس دافئة.',fr:'Le soleil est chaud.',words:['شمس','دافئة']},
+      {ar:'أنا أحب الشمس.',fr:'J\'aime le soleil.',words:['أحب','شمس']},
+    ]
+  },
+  'ص':{
+    title:'الصقر',titleFr:'Le Faucon',emoji:'🦅',
+    sentences:[
+      {ar:'هذا صقر.',fr:'C\'est un faucon.',words:['صقر']},
+      {ar:'الصقر بني.',fr:'Le faucon est brun.',words:['صقر','بني']},
+      {ar:'الصقر سريع.',fr:'Le faucon est rapide.',words:['صقر','سريع']},
+      {ar:'الصقر يطير.',fr:'Le faucon vole.',words:['صقر','يطير']},
+      {ar:'الصقر في السماء.',fr:'Le faucon est dans le ciel.',words:['صقر','السماء']},
+    ]
+  },
+  'ض':{
+    title:'الضفدع',titleFr:'La Grenouille',emoji:'🐸',
+    sentences:[
+      {ar:'هذا ضفدع.',fr:'C\'est une grenouille.',words:['ضفدع']},
+      {ar:'الضفدع أخضر.',fr:'La grenouille est verte.',words:['ضفدع','أخضر']},
+      {ar:'الضفدع صغير.',fr:'La grenouille est petite.',words:['ضفدع','صغير']},
+      {ar:'الضفدع يقفز.',fr:'La grenouille saute.',words:['ضفدع','يقفز']},
+      {ar:'الضفدع في الماء.',fr:'La grenouille est dans l\'eau.',words:['ضفدع','الماء']},
+    ]
+  },
+  'ط':{
+    title:'الطائر',titleFr:'L\'Oiseau',emoji:'🐦',
+    sentences:[
+      {ar:'هذا طائر.',fr:'C\'est un oiseau.',words:['طائر']},
+      {ar:'الطائر أحمر.',fr:'L\'oiseau est rouge.',words:['طائر','أحمر']},
+      {ar:'الطائر صغير.',fr:'L\'oiseau est petit.',words:['طائر','صغير']},
+      {ar:'الطائر يغني.',fr:'L\'oiseau chante.',words:['طائر','يغني']},
+      {ar:'الطائر يطير.',fr:'L\'oiseau vole.',words:['طائر','يطير']},
+    ]
+  },
+  'ظ':{
+    title:'الظل',titleFr:'L\'Ombre',emoji:'🌑',
+    sentences:[
+      {ar:'هذا ظل.',fr:'C\'est une ombre.',words:['ظل']},
+      {ar:'الظل كبير.',fr:'L\'ombre est grande.',words:['ظل','كبير']},
+      {ar:'الظل أسود.',fr:'L\'ombre est noire.',words:['ظل','أسود']},
+      {ar:'الظل بارد.',fr:'L\'ombre est fraîche.',words:['ظل','بارد']},
+      {ar:'أنا في الظل.',fr:'Je suis dans l\'ombre.',words:['أنا','الظل']},
+    ]
+  },
+  'ع':{
+    title:'العصفور',titleFr:'Le Moineau',emoji:'🐦',
+    sentences:[
+      {ar:'هذا عصفور.',fr:'C\'est un moineau.',words:['عصفور']},
+      {ar:'العصفور صغير.',fr:'Le moineau est petit.',words:['عصفور','صغير']},
+      {ar:'العصفور بني.',fr:'Le moineau est brun.',words:['عصفور','بني']},
+      {ar:'العصفور يغني.',fr:'Le moineau chante.',words:['عصفور','يغني']},
+      {ar:'العصفور على الشجرة.',fr:'Le moineau est sur l\'arbre.',words:['عصفور','الشجرة']},
+    ]
+  },
+  'غ':{
+    title:'الغزال',titleFr:'La Gazelle',emoji:'🦌',
+    sentences:[
+      {ar:'هذا غزال.',fr:'C\'est une gazelle.',words:['غزال']},
+      {ar:'الغزال بني.',fr:'La gazelle est brune.',words:['غزال','بني']},
+      {ar:'الغزال سريع.',fr:'La gazelle est rapide.',words:['غزال','سريع']},
+      {ar:'الغزال يجري.',fr:'La gazelle court.',words:['غزال','يجري']},
+      {ar:'الغزال في الغابة.',fr:'La gazelle est dans la forêt.',words:['غزال','الغابة']},
+    ]
+  },
+  'ف':{
+    title:'الفيل',titleFr:'L\'Éléphant',emoji:'🐘',
+    sentences:[
+      {ar:'هذا فيل.',fr:'C\'est un éléphant.',words:['فيل']},
+      {ar:'الفيل رمادي.',fr:'L\'éléphant est gris.',words:['فيل','رمادي']},
+      {ar:'الفيل كبير جداً.',fr:'L\'éléphant est très grand.',words:['فيل','كبير']},
+      {ar:'الفيل يأكل.',fr:'L\'éléphant mange.',words:['فيل','يأكل']},
+      {ar:'أنا أحب الفيل.',fr:'J\'aime l\'éléphant.',words:['أحب','فيل']},
+    ]
+  },
+  'ق':{
+    title:'القط',titleFr:'Le Chat',emoji:'🐱',
+    sentences:[
+      {ar:'هذا قط.',fr:'C\'est un chat.',words:['قط']},
+      {ar:'القط أسود.',fr:'Le chat est noir.',words:['قط','أسود']},
+      {ar:'القط صغير.',fr:'Le chat est petit.',words:['قط','صغير']},
+      {ar:'القط ينام.',fr:'Le chat dort.',words:['قط','ينام']},
+      {ar:'أنا أحب القط.',fr:'J\'aime le chat.',words:['أحب','قط']},
+    ]
+  },
+  'ك':{
+    title:'الكلب',titleFr:'Le Chien',emoji:'🐶',
+    sentences:[
+      {ar:'هذا كلب.',fr:'C\'est un chien.',words:['كلب']},
+      {ar:'الكلب أبيض.',fr:'Le chien est blanc.',words:['كلب','أبيض']},
+      {ar:'الكلب صغير.',fr:'Le chien est petit.',words:['كلب','صغير']},
+      {ar:'الكلب يلعب.',fr:'Le chien joue.',words:['كلب','يلعب']},
+      {ar:'أنا أحب الكلب.',fr:'J\'aime le chien.',words:['أحب','كلب']},
+    ]
+  },
+  'ل':{
+    title:'الليل',titleFr:'La Nuit',emoji:'🌙',
+    sentences:[
+      {ar:'هذا الليل.',fr:'C\'est la nuit.',words:['الليل']},
+      {ar:'الليل أسود.',fr:'La nuit est noire.',words:['الليل','أسود']},
+      {ar:'الليل هادئ.',fr:'La nuit est calme.',words:['الليل','هادئ']},
+      {ar:'النجوم في الليل.',fr:'Les étoiles la nuit.',words:['النجوم','الليل']},
+      {ar:'أنا أحب الليل.',fr:'J\'aime la nuit.',words:['أحب','الليل']},
+    ]
+  },
+  'م':{
+    title:'الماء',titleFr:'L\'Eau',emoji:'💧',
+    sentences:[
+      {ar:'هذا ماء.',fr:'C\'est de l\'eau.',words:['ماء']},
+      {ar:'الماء بارد.',fr:'L\'eau est froide.',words:['ماء','بارد']},
+      {ar:'الماء شفاف.',fr:'L\'eau est transparente.',words:['ماء','شفاف']},
+      {ar:'أنا أشرب الماء.',fr:'Je bois l\'eau.',words:['أشرب','ماء']},
+      {ar:'الماء لذيذ.',fr:'L\'eau est délicieuse.',words:['ماء','لذيذ']},
+    ]
+  },
+  'ن':{
+    title:'النجمة',titleFr:'L\'Étoile',emoji:'⭐',
+    sentences:[
+      {ar:'هذه نجمة.',fr:'C\'est une étoile.',words:['نجمة']},
+      {ar:'النجمة صفراء.',fr:'L\'étoile est jaune.',words:['نجمة','صفراء']},
+      {ar:'النجمة بعيدة.',fr:'L\'étoile est loin.',words:['نجمة','بعيدة']},
+      {ar:'النجمة تضيء.',fr:'L\'étoile brille.',words:['نجمة','تضيء']},
+      {ar:'أنا أحب النجوم.',fr:'J\'aime les étoiles.',words:['أحب','النجوم']},
+    ]
+  },
+  'ه':{
+    title:'الهدية',titleFr:'Le Cadeau',emoji:'🎁',
+    sentences:[
+      {ar:'هذه هدية.',fr:'C\'est un cadeau.',words:['هدية']},
+      {ar:'الهدية كبيرة.',fr:'Le cadeau est grand.',words:['هدية','كبيرة']},
+      {ar:'الهدية جميلة.',fr:'Le cadeau est beau.',words:['هدية','جميلة']},
+      {ar:'أنا أحب الهدايا.',fr:'J\'aime les cadeaux.',words:['أحب','الهدايا']},
+      {ar:'الهدية لي.',fr:'Le cadeau est pour moi.',words:['هدية','لي']},
+    ]
+  },
+  'و':{
+    title:'الوردة',titleFr:'La Rose',emoji:'🌹',
+    sentences:[
+      {ar:'هذه وردة.',fr:'C\'est une rose.',words:['وردة']},
+      {ar:'الوردة حمراء.',fr:'La rose est rouge.',words:['وردة','حمراء']},
+      {ar:'الوردة جميلة.',fr:'La rose est belle.',words:['وردة','جميلة']},
+      {ar:'الوردة تفوح.',fr:'La rose sent bon.',words:['وردة','تفوح']},
+      {ar:'أنا أحب الوردة.',fr:'J\'aime la rose.',words:['أحب','وردة']},
+    ]
+  },
+  'ي':{
+    title:'اليد',titleFr:'La Main',emoji:'✋',
+    sentences:[
+      {ar:'هذه يد.',fr:'C\'est une main.',words:['يد']},
+      {ar:'يدي كبيرة.',fr:'Ma main est grande.',words:['يدي','كبيرة']},
+      {ar:'يدي نظيفة.',fr:'Ma main est propre.',words:['يدي','نظيفة']},
+      {ar:'أنا ألعب بيدي.',fr:'Je joue avec ma main.',words:['أنا','يدي']},
+      {ar:'يدي جميلة.',fr:'Ma main est belle.',words:['يدي','جميلة']},
+    ]
+  },
+};
+
+// =====================================================
+// JEU : HISTOIRES
+// =====================================================
+let storyIdx=0;
+let storySentences=[];
+
+function startStory(){
+  if(!currentLetter)return;
+  const story=STORIES[currentLetter.letter];
+  if(!story){alert('Histoire bientôt disponible !');return;}
+  storySentences=story.sentences;
+  storyIdx=0;
+  document.getElementById('storyLetterBadge').textContent=currentLetter.letter;
+  document.getElementById('storyTitle').textContent='📖 '+story.titleFr;
+  buildStoryDots();
+  showScreen('story');
+  renderStory();
+}
+
+function buildStoryDots(){
+  const d=document.getElementById('storyDots');d.innerHTML='';
+  storySentences.forEach((_,i)=>{
+    const dot=document.createElement('div');dot.className='story-dot';dot.id='dot'+i;
+    dot.onclick=()=>{storyIdx=i;renderStory();};
+    d.appendChild(dot);
+  });
+}
+
+function renderStory(){
+  const s=storySentences[storyIdx];
+  const total=storySentences.length;
+  // Dots
+  document.querySelectorAll('.story-dot').forEach((d,i)=>{
+    d.className='story-dot'+(i===storyIdx?' active':i<storyIdx?' done':'');
+  });
+  document.getElementById('storyCounter').textContent=(storyIdx+1)+' / '+total;
+  // Prev/Next
+  document.getElementById('storyPrev').disabled=(storyIdx===0);
+  const nextBtn=document.getElementById('storyNext');
+  if(storyIdx===total-1){
+    nextBtn.textContent='🏁 Fin !';nextBtn.className='story-nav-btn finish';
+  }else{
+    nextBtn.textContent='Suivant →';nextBtn.className='story-nav-btn';
+  }
+  // Content
+  const chips=s.words.map(w=>`<span class="story-word-chip" onclick="playArabic('${w}')">${w}</span>`).join('');
+  document.getElementById('storyContent').innerHTML=`
+    <div class="story-sentence">
+      <span class="story-ar">${s.ar}</span>
+      <span class="story-fr">${s.fr}</span>
+      <button class="story-audio-btn" onclick="playArabic('${s.ar.replace(/'/g,"\\'")}')">🔊 Écouter</button>
+    </div>
+    <div class="story-words-highlight">
+      <div class="story-words-highlight-title">📌 Mots clés — clique pour écouter :</div>
+      ${chips}
+    </div>`;
+  // Auto-play
+  setTimeout(()=>playArabic(s.ar),400);
+}
+
+function storyNav(dir){
+  const total=storySentences.length;
+  if(storyIdx+dir<0)return;
+  if(storyIdx+dir>=total){
+    // Fin
+    addStar();addStar();
+    document.getElementById('storyContent').innerHTML=`
+      <div class="story-complete">
+        <div class="story-complete-emoji">🎉</div>
+        <div class="story-complete-title">Histoire terminée !</div>
+        <div style="color:#aaa;font-size:14px;margin:8px 0 16px">Tu as gagné 2 étoiles !</div>
+        <button class="story-nav-btn" onclick="storyIdx=0;renderStory()">🔄 Relire</button>
+      </div>`;
+    document.getElementById('storyDots').querySelectorAll('.story-dot').forEach(d=>d.className='story-dot done');
+    document.getElementById('storyPrev').disabled=true;
+    document.getElementById('storyNext').disabled=true;
+    document.getElementById('storyCounter').textContent='✅ Terminé !';
+    return;
+  }
+  storyIdx+=dir;
+  renderStory();
+}
+
+// =====================================================
+function showGameResults(gameName,score,total,retryFn){
+  const pct=Math.round((score/total)*100);
+  document.getElementById('resTrophy').textContent=pct===100?'🏆':pct>=60?'🥇':'💪';
+  document.getElementById('resTitle').textContent=pct===100?'Parfait !':pct>=60?'Très bien !':'Courage !';
+  document.getElementById('resScore').textContent=score+' / '+total;
+  document.getElementById('resScore').style.color=pct>=60?'#4CAF50':'#FF6B6B';
+  document.getElementById('resMsg').textContent=pct===100?'Tu es champion(ne) ! 🌟':pct>=60?'Continue, tu es super ! ⭐':'Entraîne-toi encore ! 🌈';
+  document.getElementById('resRetry').onclick=window[retryFn];
+  showScreen('results');
+}
+
+function addStar(){
+  stars++;
+  document.getElementById('starBadge').textContent=`⭐ ${stars} étoile${stars>1?'s':''}`;
+}
+
+// =====================================================
+// GRANDES HISTOIRES
+// =====================================================
+const BIG_STORIES=[
+  {id:1,cover:'🐱',title:'Le petit garçon et le chat',titleAr:'الوَلَدُ الصَّغِيرُ وَالقِطُّ',level:'Niveau 1',color:'#4CAF50',desc:'Amitié entre un garçon et son chat.',
+   sentences:[
+    {ar:'كَانَ يَاسِرُ وَلَدٌ صَغِيرٌ يَسْكُنُ فِي بَيْتٍ جَمِيل.',fr:'Yassir était un petit garçon qui habitait dans une belle maison.',words:{كَانَ:'il était',يَاسِرُ:'Yassir',وَلَدٌ:'garçon',صَغِيرٌ:'petit',بَيْتٍ:'maison',جَمِيل:'belle'}},
+    {ar:'كَانَ لَهُ قِطٌّ أَبْيَضُ اسْمُهُ لُولُو.',fr:'Il avait un chat blanc qui s\'appelait Loulou.',words:{قِطٌّ:'chat',أَبْيَضُ:'blanc',اسْمُهُ:'son nom',لُولُو:'Loulou'}},
+    {ar:'كُلَّ يَوْمٍ، كَانَ يَاسِرُ يَلْعَبُ مَعَ لُولُو فِي الحَدِيقَة.',fr:'Chaque jour, Yassir jouait avec Loulou dans le jardin.',words:{كُلَّ:'chaque',يَوْمٍ:'jour',يَلْعَبُ:'il joue',مَعَ:'avec',الحَدِيقَة:'jardin'}},
+    {ar:'ذَاتَ يَوْمٍ، اخْتَفَى لُولُو وَلَمْ يَجِدْهُ يَاسِرُ.',fr:'Un jour, Loulou disparut et Yassir ne le trouva pas.',words:{اخْتَفَى:'il disparut',يَجِدْهُ:'il le trouve'}},
+    {ar:'بَكَى يَاسِرُ كَثِيرًا وَنَادَى: يَا لُولُو، أَيْنَ أَنْتَ؟',fr:'Yassir pleura beaucoup : Loulou, où es-tu ?',words:{بَكَى:'il pleura',كَثِيرًا:'beaucoup',نَادَى:'il appela',أَيْنَ:'où'}},
+    {ar:'فَجَأَةً، سَمِعَ صَوْتًا مِنَ الشَّجَرَة.',fr:'Soudain, il entendit un son venant de l\'arbre.',words:{فَجَأَةً:'soudain',سَمِعَ:'il entendit',الشَّجَرَة:'arbre'}},
+    {ar:'كَانَ لُولُو جَالِسًا فَوْقَ غُصْنٍ كَبِير.',fr:'Loulou était assis sur une grande branche.',words:{جَالِسًا:'assis',فَوْقَ:'au-dessus',غُصْنٍ:'branche'}},
+    {ar:'صَعِدَ يَاسِرُ وَأَنْقَذَ لُولُو، وَفَرِحَا مَعًا.',fr:'Yassir monta, sauva Loulou, et ils furent heureux ensemble.',words:{صَعِدَ:'il monta',أَنْقَذَ:'il sauva',فَرِحَا:'ils se réjouirent',مَعًا:'ensemble'}},
+   ],
+   questions:[
+    {q:'Comment s\'appelle le garçon ?',qar:'مَا اسْمُ الوَلَد؟',opts:['Yassir','Omar','Ali','Ahmad'],correct:'Yassir',expl:'يَاسِرُ est le prénom du garçon.'},
+    {q:'De quelle couleur est le chat ?',qar:'مَا لَوْنُ القِطّ؟',opts:['Blanc','Noir','Orange','Gris'],correct:'Blanc',expl:'أَبْيَضُ = blanc'},
+    {q:'Où était Loulou ?',qar:'أَيْنَ كَانَ لُولُو؟',opts:['Dans l\'arbre','Sous le lit','Dans la cuisine','Dehors'],correct:'Dans l\'arbre',expl:'فَوْقَ غُصْنٍ = sur une branche'},
+    {q:'Que fit Yassir ?',qar:'مَاذَا فَعَلَ يَاسِرُ؟',opts:['Il pleura','Il dormit','Il mangea','Il joua'],correct:'Il pleura',expl:'بَكَى = il pleura'},
+    {q:'Comment se termine l\'histoire ?',qar:'كَيْفَ تَنْتَهِي القِصَّة؟',opts:['Yassir sauve Loulou','Loulou s\'en va','Loulou tombe','Yassir pleure'],correct:'Yassir sauve Loulou',expl:'أَنْقَذَ = sauva / فَرِحَا مَعًا = heureux ensemble'},
+   ]},
+  {id:2,cover:'🦊',title:'Le renard rusé',titleAr:'الثَّعْلَبُ الذَّكِيُّ',level:'Niveau 2',color:'#FF9800',desc:'Un renard affamé use de ruse pour obtenir à manger.',
+   sentences:[
+    {ar:'كَانَ ثَعْلَبٌ ذَكِيٌّ يَعِيشُ فِي الغَابَة.',fr:'Un renard rusé vivait dans la forêt.',words:{ثَعْلَبٌ:'renard',ذَكِيٌّ:'rusé',يَعِيشُ:'il vit',الغَابَة:'forêt'}},
+    {ar:'ذَاتَ يَوْمٍ، كَانَ الثَّعْلَبُ جَائِعًا جِدًّا.',fr:'Un jour, le renard avait très faim.',words:{جَائِعًا:'affamé',جِدًّا:'très'}},
+    {ar:'رَأَى غُرَابًا يَجْلِسُ عَلَى شَجَرَةٍ وَفِي مِنْقَارِهِ قِطْعَةُ جُبْن.',fr:'Il vit un corbeau avec un morceau de fromage dans son bec.',words:{غُرَابًا:'corbeau',مِنْقَارِهِ:'son bec',جُبْن:'fromage'}},
+    {ar:'قَالَ الثَّعْلَبُ: يَا غُرَابُ، مَا أَجْمَلَ صَوْتَكَ!',fr:'Le renard dit : Ô corbeau, que ta voix est belle !',words:{قَالَ:'il dit',أَجْمَلَ:'plus belle',صَوْتَكَ:'ta voix'}},
+    {ar:'فَفَتَحَ الغُرَابُ مِنْقَارَهُ لِيُغَنِّيَ، فَسَقَطَتِ الجُبْنَةُ.',fr:'Le corbeau ouvrit son bec pour chanter, et le fromage tomba.',words:{فَفَتَحَ:'il ouvrit',لِيُغَنِّيَ:'pour chanter',فَسَقَطَتِ:'tomba'}},
+    {ar:'الْتَقَطَ الثَّعْلَبُ الجُبْنَةَ وَهَرَبَ ضَاحِكًا.',fr:'Le renard attrapa le fromage et s\'enfuit en riant.',words:{الْتَقَطَ:'il attrapa',وَهَرَبَ:'s\'enfuit',ضَاحِكًا:'en riant'}},
+    {ar:'قَالَ الثَّعْلَبُ: مَنْ يُصَدِّقُ المَدِيحَ يَخْسَرُ.',fr:'Le renard dit : Celui qui croit la flatterie perd.',words:{مَنْ:'celui qui',يُصَدِّقُ:'il croit',المَدِيحَ:'flatterie',يَخْسَرُ:'il perd'}},
+   ],
+   questions:[
+    {q:'Où vivait le renard ?',qar:'أَيْنَ كَانَ يَعِيشُ الثَّعْلَب؟',opts:['Dans la forêt','Dans le désert','En ville','À la montagne'],correct:'Dans la forêt',expl:'الغَابَة = la forêt'},
+    {q:'Qu\'avait le corbeau dans son bec ?',qar:'مَا الَّذِي فِي مِنْقَارِ الغُرَاب؟',opts:['Du fromage','Du pain','Un fruit','Une fleur'],correct:'Du fromage',expl:'جُبْن = fromage'},
+    {q:'Que dit le renard pour tromper le corbeau ?',qar:'مَاذَا قَالَ الثَّعْلَب؟',opts:['Que sa voix est belle','Qu\'il est fort','Qu\'il est grand','Qu\'il est courageux'],correct:'Que sa voix est belle',expl:'مَا أَجْمَلَ صَوْتَكَ'},
+    {q:'Pourquoi le fromage tomba-t-il ?',qar:'لِمَاذَا سَقَطَتِ الجُبْنَة؟',opts:['Le corbeau ouvrit le bec','Il y avait du vent','Le corbeau le lâcha','Il glissa'],correct:'Le corbeau ouvrit le bec',expl:'فَتَحَ مِنْقَارَهُ لِيُغَنِّيَ'},
+    {q:'Quelle est la morale ?',qar:'مَا الدَّرْس؟',opts:['Méfie-toi de la flatterie','Sois généreux','Chante souvent','Fais confiance'],correct:'Méfie-toi de la flatterie',expl:'مَنْ يُصَدِّقُ المَدِيحَ يَخْسَرُ'},
+   ]},
+  {id:3,cover:'🌱',title:'La petite graine',titleAr:'الحَبَّةُ الصَّغِيرَة',level:'Niveau 2',color:'#4CAF50',desc:'Une graine qui rêve de devenir un grand arbre.',
+   sentences:[
+    {ar:'كَانَتْ حَبَّةٌ صَغِيرَةٌ نَائِمَةً تَحْتَ التُّرَاب.',fr:'Une petite graine dormait sous la terre.',words:{حَبَّةٌ:'graine',صَغِيرَةٌ:'petite',نَائِمَةً:'endormie',تَحْتَ:'sous',التُّرَاب:'la terre'}},
+    {ar:'حَلَمَتِ الحَبَّةُ بِأَنَّهَا سَتُصْبِحُ شَجَرَةً كَبِيرَة.',fr:'La graine rêvait qu\'elle deviendrait un grand arbre.',words:{حَلَمَتِ:'elle rêva',سَتُصْبِحُ:'deviendra',شَجَرَةً:'arbre'}},
+    {ar:'جَاءَ المَطَرُ وَسَقَطَ عَلَى الأَرْض.',fr:'La pluie vint et tomba sur la terre.',words:{المَطَرُ:'la pluie',وَسَقَطَ:'tomba',الأَرْض:'la terre'}},
+    {ar:'شَرِبَتِ الحَبَّةُ الماءَ وَبَدَأَتْ تَنْمُو.',fr:'La graine but l\'eau et commença à pousser.',words:{شَرِبَتِ:'elle but',الماءَ:'l\'eau',بَدَأَتْ:'elle commença',تَنْمُو:'pousser'}},
+    {ar:'خَرَجَ مِنْهَا غُصْنٌ صَغِيرٌ يَتَطَلَّعُ نَحْوَ الشَّمْس.',fr:'Une petite branche sortit vers le soleil.',words:{غُصْنٌ:'branche',يَتَطَلَّعُ:'regarde vers',نَحْوَ:'vers',الشَّمْس:'le soleil'}},
+    {ar:'بَعْدَ سَنَوَاتٍ، أَصْبَحَتْ شَجَرَةً ظَلِيلَةً يَسْتَرِيحُ تَحْتَهَا النَّاس.',fr:'Après des années, elle devint un arbre ombragé sous lequel les gens se reposaient.',words:{بَعْدَ:'après',سَنَوَاتٍ:'années',أَصْبَحَتْ:'elle devint',النَّاس:'les gens'}},
+    {ar:'الصَّبْرُ وَالمَاءُ يُحَوِّلَانِ الحَبَّةَ إِلَى شَجَرَة.',fr:'La patience et l\'eau transforment la graine en arbre.',words:{الصَّبْرُ:'la patience',يُحَوِّلَانِ:'transforment',إِلَى:'en/vers'}},
+   ],
+   questions:[
+    {q:'Où dormait la graine ?',qar:'أَيْنَ كَانَتِ الحَبَّة؟',opts:['Sous la terre','Dans l\'eau','Sur un arbre','Dans une boîte'],correct:'Sous la terre',expl:'تَحْتَ التُّرَاب = sous la terre'},
+    {q:'De quoi rêvait la graine ?',qar:'مَا حُلْمُ الحَبَّة؟',opts:['Devenir un grand arbre','Voyager loin','Devenir une fleur','Trouver de l\'eau'],correct:'Devenir un grand arbre',expl:'سَتُصْبِحُ شَجَرَةً كَبِيرَة'},
+    {q:'Qu\'est-ce qui fit pousser la graine ?',qar:'مَا الَّذِي جَعَلَ الحَبَّةَ تَنْمُو؟',opts:['La pluie et l\'eau','Le vent','La chaleur','Le jardinier'],correct:'La pluie et l\'eau',expl:'المَطَر = pluie / الماء = eau'},
+    {q:'Vers quoi la pousse se tourna-t-elle ?',qar:'نَحْوَ أَيْنَ تَطَلَّعَ الغُصْن؟',opts:['Vers le soleil','Vers l\'eau','Vers la lune','Vers le vent'],correct:'Vers le soleil',expl:'يَتَطَلَّعُ نَحْوَ الشَّمْس'},
+    {q:'Quelle est la morale ?',qar:'مَا الدَّرْس؟',opts:['La patience fait grandir','L\'arbre est fort','La pluie est froide','Les graines sont petites'],correct:'La patience fait grandir',expl:'الصَّبْر = patience'},
+   ]},
+  {id:4,cover:'🏫',title:'Ali et la première journée',titleAr:'عَلِيٌّ وَأَوَّلُ يَوْمٍ فِي المَدْرَسَة',level:'Niveau 3',color:'#2196F3',desc:'Ali vit sa première journée à l\'école.',
+   sentences:[
+    {ar:'اسْتَيْقَظَ عَلِيٌّ بَاكِرًا فِي أَوَّلِ يَوْمٍ مِنَ الدِّرَاسَة.',fr:'Ali se réveilla tôt le premier jour d\'école.',words:{اسْتَيْقَظَ:'il se réveilla',بَاكِرًا:'tôt',أَوَّلِ:'premier',الدِّرَاسَة:'école'}},
+    {ar:'لَبِسَ مَلَابِسَهُ الجَدِيدَةَ وَحَمَلَ حَقِيبَتَهُ بِفَرَح.',fr:'Il mit ses nouveaux habits et porta son sac avec joie.',words:{لَبِسَ:'il s\'habilla',حَمَلَ:'il porta',حَقِيبَتَهُ:'son sac',بِفَرَح:'avec joie'}},
+    {ar:'كَانَ قَلْبُهُ يَدُقُّ بِسُرْعَةٍ مِنَ الخَوْف.',fr:'Son cœur battait vite de peur.',words:{قَلْبُهُ:'son cœur',يَدُقُّ:'bat',بِسُرْعَةٍ:'vite',الخَوْف:'la peur'}},
+    {ar:'عِنْدَمَا دَخَلَ الفَصْلَ، ابْتَسَمَتِ المُعَلِّمَةُ وَقَالَتْ: أَهْلًا بِكَ!',fr:'Quand il entra en classe, la maîtresse sourit : Bienvenue !',words:{عِنْدَمَا:'quand',دَخَلَ:'il entra',ابْتَسَمَتِ:'elle sourit',أَهْلًا:'bienvenue'}},
+    {ar:'جَلَسَ بِجَانِبِ وَلَدٍ اسْمُهُ سَامِي، فَأَصْبَحَا صَدِيقَيْن.',fr:'Il s\'assit à côté d\'un garçon nommé Sami, ils devinrent amis.',words:{جَلَسَ:'il s\'assit',بِجَانِبِ:'à côté de',سَامِي:'Sami',أَصْبَحَا:'ils devinrent'}},
+    {ar:'تَعَلَّمُوا الحُرُوفَ وَالأَرْقَامَ وَرَسَمُوا صُوَرًا جَمِيلَة.',fr:'Ils apprirent les lettres, les chiffres et dessinèrent de belles images.',words:{تَعَلَّمُوا:'ils apprirent',الحُرُوفَ:'lettres',الأَرْقَامَ:'chiffres',رَسَمُوا:'ils dessinèrent'}},
+    {ar:'عَادَ عَلِيٌّ إِلَى بَيْتِهِ سَعِيدًا وَقَالَ: أُحِبُّ المَدْرَسَة!',fr:'Ali rentra heureux et dit : J\'aime l\'école !',words:{عَادَ:'il rentra',سَعِيدًا:'heureux',أُحِبُّ:'j\'aime',المَدْرَسَة:'l\'école'}},
+   ],
+   questions:[
+    {q:'Comment s\'appelle le garçon ?',qar:'مَا اسْمُ الوَلَد؟',opts:['Ali','Sami','Omar','Khalid'],correct:'Ali',expl:'عَلِيٌّ est le prénom'},
+    {q:'Comment se sentait Ali ?',qar:'كَيْفَ كَانَ شُعُورُ عَلِيّ؟',opts:['Il avait peur','Il était triste','Il était en colère','Il dormait'],correct:'Il avait peur',expl:'قَلْبُهُ يَدُقُّ مِنَ الخَوْف'},
+    {q:'Comment s\'appelle le nouvel ami ?',qar:'مَا اسْمُ الصَّدِيق؟',opts:['Sami','Yassir','Hassan','Nour'],correct:'Sami',expl:'وَلَدٍ اسْمُهُ سَامِي'},
+    {q:'Qu\'ont-ils appris en classe ?',qar:'مَاذَا تَعَلَّمُوا؟',opts:['Lettres et chiffres','La natation','La cuisine','Le sport'],correct:'Lettres et chiffres',expl:'الحُرُوف = lettres / الأَرْقَام = chiffres'},
+    {q:'Que dit Ali en rentrant ?',qar:'مَاذَا قَالَ عَلِيّ؟',opts:['J\'aime l\'école !','Je suis fatigué','J\'ai faim','Je veux dormir'],correct:'J\'aime l\'école !',expl:'أُحِبُّ المَدْرَسَة'},
+   ]},
+  {id:5,cover:'🦁',title:'Le lion et la souris',titleAr:'الأَسَدُ وَالفَأْر',level:'Niveau 3',color:'#FF5722',desc:'Un grand lion apprend qu\'un petit ami peut tout changer.',
+   sentences:[
+    {ar:'كَانَ أَسَدٌ قَوِيٌّ نَائِمًا فِي الغَابَة.',fr:'Un lion puissant dormait dans la forêt.',words:{أَسَدٌ:'lion',قَوِيٌّ:'puissant',نَائِمًا:'dormant'}},
+    {ar:'مَرَّ فَأْرٌ صَغِيرٌ وَوَطِئَ عَلَى أَنْفِ الأَسَد.',fr:'Une souris passa et marcha sur le nez du lion.',words:{مَرَّ:'passa',فَأْرٌ:'souris',وَطِئَ:'marcha sur',أَنْفِ:'le nez'}},
+    {ar:'اسْتَيْقَظَ الأَسَدُ غَاضِبًا وَأَمْسَكَ بِالفَأْر.',fr:'Le lion se réveilla en colère et attrapa la souris.',words:{اسْتَيْقَظَ:'il se réveilla',غَاضِبًا:'en colère',أَمْسَكَ:'il attrapa'}},
+    {ar:'بَكَى الفَأْرُ وَقَالَ: اعْفُ عَنِّي، سَأَرُدُّ لَكَ الجَمِيل.',fr:'La souris pleura : Pardonne-moi, je te rendrai la pareille.',words:{بَكَى:'pleura',اعْفُ:'pardonne',سَأَرُدُّ:'je rendrai',الجَمِيل:'la pareille'}},
+    {ar:'ضَحِكَ الأَسَدُ وَأَطْلَقَ سَرَاحَه.',fr:'Le lion rit et le libéra.',words:{ضَحِكَ:'il rit',أَطْلَقَ:'il libéra'}},
+    {ar:'بَعْدَ أَيَّامٍ، وَقَعَ الأَسَدُ فِي شَبَكَةِ الصَّيَّاد.',fr:'Quelques jours plus tard, le lion tomba dans le filet du chasseur.',words:{بَعْدَ:'après',أَيَّامٍ:'jours',وَقَعَ:'il tomba',شَبَكَةِ:'filet',الصَّيَّاد:'chasseur'}},
+    {ar:'جَاءَ الفَأْرُ وَقَطَعَ الشَّبَكَةَ بِأَسْنَانِهِ وَأَنْقَذَ الأَسَد.',fr:'La souris vint, coupa le filet avec ses dents et sauva le lion.',words:{قَطَعَ:'coupa',بِأَسْنَانِهِ:'avec ses dents',أَنْقَذَ:'sauva'}},
+    {ar:'لَا تَحْتَقِرَنَّ صَغِيرًا، فَرُبَّمَا يُنْقِذُكَ يَوْمًا.',fr:'Ne méprise jamais les petits, ils peuvent te sauver un jour.',words:{لَا:'ne...pas',تَحْتَقِرَنَّ:'méprise',صَغِيرًا:'petit',يُنْقِذُكَ:'te sauvera'}},
+   ],
+   questions:[
+    {q:'Qu\'est-il arrivé au lion ?',qar:'مَاذَا حَدَثَ لِلْأَسَد؟',opts:['Une souris marcha sur son nez','Il trouva de la nourriture','Il tomba dans l\'eau','Il perdit ses amis'],correct:'Une souris marcha sur son nez',expl:'وَطِئَ عَلَى أَنْفِ الأَسَد'},
+    {q:'Que promit la souris ?',qar:'مَاذَا وَعَدَ الفَأْر؟',opts:['Lui rendre la pareille','Partir loin','Ne plus revenir','Lui apporter à manger'],correct:'Lui rendre la pareille',expl:'سَأَرُدُّ لَكَ الجَمِيل'},
+    {q:'Dans quoi le lion tomba-t-il ?',qar:'فِيمَ وَقَعَ الأَسَد؟',opts:['Un filet','Un trou','L\'eau','Une cage'],correct:'Un filet',expl:'شَبَكَة = filet'},
+    {q:'Comment la souris sauva-t-elle le lion ?',qar:'كَيْفَ أَنْقَذَتِ الفَأْرُ الأَسَد؟',opts:['Elle coupa le filet','Elle appela au secours','Elle apporta de l\'aide','Elle fit peur au chasseur'],correct:'Elle coupa le filet',expl:'قَطَعَ الشَّبَكَةَ بِأَسْنَانِهِ'},
+    {q:'Quelle est la morale ?',qar:'مَا الدَّرْس؟',opts:['Ne méprise jamais les petits','Les lions sont forts','Les souris sont courageuses','La forêt est dangereuse'],correct:'Ne méprise jamais les petits',expl:'لَا تَحْتَقِرَنَّ صَغِيرًا'},
+   ]},
+];
+
+let bsCurrentStory=null,bsQIdx=0,bsQScore=0,bsQAnswered=false,bsMode='read',bsWdTimer=null;
+
+function bsShowGrid(){
+  document.getElementById('bsView').style.display='block';
+  document.getElementById('bsReadingView').style.display='none';
+  document.getElementById('bsResultView').style.display='none';
+  const g=document.getElementById('bsGrid');g.innerHTML='';
+  BIG_STORIES.forEach(s=>{
+    const c=document.createElement('button');c.className='bs-card';c.style.textAlign='left';
+    c.innerHTML=`<span class="bs-cover">${s.cover}</span><div class="bs-title" style="color:${s.color}">${s.title}</div><span class="bs-title-ar">${s.titleAr}</span><div class="bs-desc">${s.desc}</div><div class="bs-tags"><span class="bs-tag">${s.level}</span><span class="bs-tag">${s.sentences.length} phrases</span><span class="bs-tag">${s.questions.length} questions</span></div>`;
+    c.onclick=()=>bsOpen(s);g.appendChild(c);
+  });
+}
+
+function bsOpen(story){
+  bsCurrentStory=story;bsQIdx=0;bsQScore=0;bsQAnswered=false;bsMode='read';
+  document.getElementById('bsBoxTitle').textContent=story.title;
+  document.getElementById('bsBoxTitleAr').textContent=story.titleAr;
+  document.getElementById('bsCtrlRead').classList.add('on');
+  document.getElementById('bsCtrlTrans').classList.remove('on');
+  // Build text
+  const at=document.getElementById('bsArabicText');at.innerHTML='';
+  story.sentences.forEach((s,i)=>{
+    const span=document.createElement('span');span.className='bs-sentence';
+    const wm=s.words||{};
+    s.ar.split(' ').forEach(w=>{
+      const cw=w.replace(/[،.:؟!]/g,'');
+      const ws=document.createElement('span');ws.className='bs-word';ws.textContent=w+' ';
+      const tr=wm[cw]||wm[w];
+      ws.onclick=(e)=>{e.stopPropagation();if(tr)bsShowWd(cw,tr);playArabic(cw);};
+      span.appendChild(ws);
+    });
+    span.onclick=()=>{
+      document.querySelectorAll('.bs-sentence').forEach(x=>x.classList.remove('on'));
+      span.classList.add('on');
+      const tb=document.getElementById('bsTrans');tb.className='bs-trans on';
+      tb.innerHTML=`<strong>${i+1}.</strong> ${s.fr}`;playArabic(s.ar);
+    };
+    at.appendChild(span);at.appendChild(document.createTextNode(' '));
+  });
+  document.getElementById('bsTrans').className='bs-trans';
+  document.getElementById('bsTrans').textContent='Clique sur une phrase pour voir sa traduction';
+  bsRenderQ();
+  document.getElementById('bsView').style.display='none';
+  document.getElementById('bsReadingView').style.display='block';
+  document.getElementById('bsResultView').style.display='none';
+}
+
+function bsSetMode(m){
+  bsMode=m;
+  document.getElementById('bsCtrlRead').classList.toggle('on',m==='read');
+  document.getElementById('bsCtrlTrans').classList.toggle('on',m==='translate');
+  const tb=document.getElementById('bsTrans');
+  if(m==='translate'){tb.className='bs-trans on';tb.innerHTML=bsCurrentStory.sentences.map((s,i)=>`<span style="display:block;margin-bottom:6px"><strong>${i+1}.</strong> ${s.fr}</span>`).join('');}
+  else{tb.className='bs-trans';tb.textContent='Clique sur une phrase pour voir sa traduction';}
+}
+
+function bsListenAll(){
+  if(!bsCurrentStory)return;
+  playArabic(bsCurrentStory.sentences.map(s=>s.ar).join(' '));
+  const b=document.getElementById('bsCtrlListen');b.classList.add('on');setTimeout(()=>b.classList.remove('on'),3000);
+}
+
+function bsShowWd(ar,fr){
+  const p=document.getElementById('bsWdPop');
+  document.getElementById('bsWpAr').textContent=ar;document.getElementById('bsWpFr').textContent=fr;
+  p.style.display='block';clearTimeout(bsWdTimer);bsWdTimer=setTimeout(()=>p.style.display='none',3000);
+}
+
+function bsRenderQ(){
+  bsQAnswered=false;
+  document.getElementById('bsFb').className='hidden';document.getElementById('bsNext').className='bs-next hidden';
+  const q=bsCurrentStory.questions[bsQIdx];const total=bsCurrentStory.questions.length;
+  document.getElementById('bsProgFill').style.width=((bsQIdx/total)*100)+'%';
+  const area=document.getElementById('bsQuizArea');const L=['A','B','C','D'];
+  area.innerHTML=`<div class="bs-q">❓ Question ${bsQIdx+1}/${total} — ${q.q}</div><span class="bs-q-ar" onclick="playArabic(this.textContent.trim())">${q.qar}</span><div class="bs-opts" id="bsOptGrid"></div>`;
+  const og=document.getElementById('bsOptGrid');
+  [...q.opts].sort(()=>Math.random()-0.5).forEach((opt,i)=>{
+    const b=document.createElement('button');b.className='bs-opt';
+    b.innerHTML=`<span class="bs-opt-l">${L[i]}</span>${opt}`;
+    b.onclick=()=>{
+      if(bsQAnswered)return;bsQAnswered=true;const ok=opt===q.correct;
+      document.querySelectorAll('.bs-opt').forEach(x=>{x.disabled=true;if(x.textContent.includes(q.correct))x.classList.add('correct');});
+      if(!ok)b.classList.add('wrong');if(ok){bsQScore++;addStar();}
+      const fb=document.getElementById('bsFb');fb.className='bs-fb '+(ok?'good':'bad');
+      fb.innerHTML=(ok?'🎉 Bravo ! ':'😅 Bonne réponse : <strong>'+q.correct+'</strong>')+`<br><small style="font-size:11px;opacity:0.6;display:block;margin-top:3px">💡 ${q.expl}</small>`;
+      const nb=document.getElementById('bsNext');nb.className='bs-next';
+      nb.textContent=(bsQIdx+1>=bsCurrentStory.questions.length)?'🏁 Voir le score !':'Question suivante →';
+    };og.appendChild(b);
+  });
+}
+
+function bsNextQ(){
+  bsQIdx++;
+  if(bsQIdx>=bsCurrentStory.questions.length){
+    const total=bsCurrentStory.questions.length;const pct=Math.round((bsQScore/total)*100);
+    document.getElementById('bsRTrophy').textContent=pct===100?'🏆':pct>=60?'🥇':'💪';
+    document.getElementById('bsRTitle').textContent=pct===100?'Parfait !':pct>=60?'Très bien !':'Continue !';
+    document.getElementById('bsRScore').textContent=bsQScore+' / '+total;
+    document.getElementById('bsRScore').style.color=pct>=60?'#FFC83C':'#FF8A80';
+    document.getElementById('bsRMsg').textContent=pct===100?'Tu as tout compris ! 🌟':pct>=60?'Tu as bien lu ! ⭐':'Relis l\'histoire et réessaie ! 💪';
+    document.getElementById('bsRRetry').onclick=()=>bsOpen(bsCurrentStory);
+    document.getElementById('bsReadingView').style.display='none';document.getElementById('bsResultView').style.display='block';
+  }else bsRenderQ();
+}
+
+// =====================================================
+// PHRASES
+// =====================================================
+const PHRASES=[
+  {level:1,arabic:'مَرْحَبًا',translit:'Marhaban',fr:'Bonjour',words:[{ar:'مَرْحَبًا',fr:'Bonjour'}],options:['Bonjour','Au revoir','Merci','Bonsoir'],tip:'Le mot le plus courant pour saluer !'},
+  {level:1,arabic:'كَيْفَ حَالُكَ؟',translit:'Kayfa ḥāluk?',fr:'Comment vas-tu ?',words:[{ar:'كَيْفَ',fr:'comment'},{ar:'حَالُكَ',fr:'ton état'}],options:['Comment vas-tu ?','Quel âge as-tu ?','Où habites-tu ?','Quel est ton nom ?'],tip:'كَيْفَ = comment / حَال = état'},
+  {level:1,arabic:'أَنَا بِخَيْر',translit:'Ana bi-khayr',fr:'Je vais bien',words:[{ar:'أَنَا',fr:'je'},{ar:'بِخَيْر',fr:'bien'}],options:['Je vais bien','Je suis fatigué','Je suis triste','Je suis malade'],tip:'أَنَا = je / خَيْر = bien'},
+  {level:1,arabic:'مَا اسْمُكَ؟',translit:'Ma ismuk?',fr:'Quel est ton nom ?',words:[{ar:'مَا',fr:'quel'},{ar:'اسْمُكَ',fr:'ton nom'}],options:['Quel est ton nom ?','Quel âge as-tu ?','D\'où viens-tu ?','Que fais-tu ?'],tip:'اسْم = nom / كَ = ton'},
+  {level:1,arabic:'شُكْرًا جَزِيلًا',translit:'Shukran jazilan',fr:'Merci beaucoup',words:[{ar:'شُكْرًا',fr:'merci'},{ar:'جَزِيلًا',fr:'beaucoup'}],options:['Merci beaucoup','S\'il te plaît','Excusez-moi','De rien'],tip:'شُكْر = remerciement / جَزِيل = abondant'},
+  {level:1,arabic:'مَعَ السَّلَامَة',translit:"Maʿa s-salāma",fr:'Au revoir',words:[{ar:'مَعَ',fr:'avec'},{ar:'السَّلَامَة',fr:'la paix'}],options:['Au revoir','Bonjour','Bonne nuit','Bienvenue'],tip:'مَعَ السَّلَامَة = avec la paix'},
+  {level:2,arabic:'هَذَا أَبِي',translit:'Hādhā abī',fr:'Voici mon père',words:[{ar:'هَذَا',fr:'voici'},{ar:'أَبِي',fr:'mon père'}],options:['Voici mon père','Voici mon frère','Voici mon ami','Voici mon prof'],tip:'هَذَا = voici / أَب = père + ي = mon'},
+  {level:2,arabic:'أُمِّي طَيِّبَة',translit:'Ummī ṭayyibah',fr:'Ma mère est gentille',words:[{ar:'أُمِّي',fr:'ma mère'},{ar:'طَيِّبَة',fr:'gentille'}],options:['Ma mère est gentille','Ma sœur est grande','Mon frère est fort','Ma famille est heureuse'],tip:'أُمّ = mère / طَيِّب = bon'},
+  {level:2,arabic:'عِنْدِي أَخٌ وَأُخْت',translit:"ʿIndī akhun wa-ukht",fr:"J'ai un frère et une sœur",words:[{ar:'عِنْدِي',fr:"j'ai"},{ar:'أَخٌ',fr:'frère'},{ar:'وَ',fr:'et'},{ar:'أُخْت',fr:'sœur'}],options:["J'ai un frère et une sœur","J'ai deux frères","Je n'ai pas de sœur","J'ai une grande famille"],tip:'عِنْدِي = j\'ai / أَخ = frère / أُخْت = sœur'},
+  {level:2,arabic:'أَنَا فِي الْبَيْت',translit:'Ana fī l-bayt',fr:'Je suis à la maison',words:[{ar:'أَنَا',fr:'je'},{ar:'فِي',fr:'dans'},{ar:'الْبَيْت',fr:'la maison'}],options:['Je suis à la maison','Je suis à l\'école','Je suis au parc','Je vais au marché'],tip:'فِي = dans / الْبَيْت = la maison'},
+  {level:2,arabic:'أُحِبُّ الطَّعَام',translit:"Uḥibbu ṭ-ṭaʿām",fr:"J'aime la nourriture",words:[{ar:'أُحِبُّ',fr:"j'aime"},{ar:'الطَّعَام',fr:'la nourriture'}],options:["J'aime la nourriture","Je mange le matin","Je cuisine bien","J'ai faim"],tip:'أُحِبُّ = j\'aime / طَعَام = nourriture'},
+  {level:2,arabic:'الجَوُّ جَمِيل اليَوْمَ',translit:'Al-jawwu jamīl al-yawm',fr:"Le temps est beau aujourd'hui",words:[{ar:'الجَوّ',fr:'la météo'},{ar:'جَمِيل',fr:'beau'},{ar:'اليَوْمَ',fr:"aujourd'hui"}],options:["Le temps est beau aujourd'hui","Il fait froid","Il pleut","Le ciel est nuageux"],tip:'جَوّ = temps / جَمِيل = beau / يَوْم = jour'},
+  {level:3,arabic:'أَنَا أَذْهَبُ إِلَى المَدْرَسَة',translit:'Ana adhabu ilā l-madrasa',fr:"Je vais à l'école",words:[{ar:'أَنَا',fr:'je'},{ar:'أَذْهَبُ',fr:'je vais'},{ar:'إِلَى',fr:'à'},{ar:'المَدْرَسَة',fr:"l'école"}],options:["Je vais à l'école","Je rentre à la maison","Je vais au marché","Je joue dans la rue"],tip:'أَذْهَبُ = je vais / مَدْرَسَة = école'},
+  {level:3,arabic:'أَنَا أَشْرَبُ الماءَ',translit:"Ana ashrabu l-māʾ",fr:"Je bois de l'eau",words:[{ar:'أَنَا',fr:'je'},{ar:'أَشْرَبُ',fr:'je bois'},{ar:'الماءَ',fr:"l'eau"}],options:["Je bois de l'eau","Je mange une pomme","Je prépare le thé","J'aime le jus"],tip:"أَشْرَبُ = je bois / ماء = eau"},
+  {level:3,arabic:'الكِتَابُ عَلَى الطَّاوِلَة',translit:"Al-kitābu ʿalā ṭ-ṭāwila",fr:'Le livre est sur la table',words:[{ar:'الكِتَاب',fr:'le livre'},{ar:'عَلَى',fr:'sur'},{ar:'الطَّاوِلَة',fr:'la table'}],options:['Le livre est sur la table','Le stylo est dans le sac','Le cahier est par terre','La trousse est ouverte'],tip:'كِتَاب = livre / عَلَى = sur / طَاوِلَة = table'},
+  {level:3,arabic:'أَنَا أُحِبُّ الرِّيَاضَة',translit:"Ana uḥibbu r-riyāḍa",fr:"J'aime le sport",words:[{ar:'أَنَا',fr:'je'},{ar:'أُحِبُّ',fr:"j'aime"},{ar:'الرِّيَاضَة',fr:'le sport'}],options:["J'aime le sport","Je joue de la guitare","J'écoute la musique","Je lis beaucoup"],tip:'رِيَاضَة = sport'},
+  {level:3,arabic:'الشَّمْسُ تَشْرُقُ صَبَاحًا',translit:'Ash-shamsu tashruqu ṣabāḥan',fr:'Le soleil se lève le matin',words:[{ar:'الشَّمْس',fr:'le soleil'},{ar:'تَشْرُقُ',fr:'se lève'},{ar:'صَبَاحًا',fr:'le matin'}],options:['Le soleil se lève le matin','La lune brille la nuit','Il pleut le soir','Le vent souffle fort'],tip:'شَمْس = soleil / يَشْرُق = se lever / صَبَاح = matin'},
+  {level:3,arabic:'أَنَا أَنَامُ مُبَكِّرًا',translit:'Ana anāmu mubakkiran',fr:'Je dors tôt',words:[{ar:'أَنَا',fr:'je'},{ar:'أَنَامُ',fr:'je dors'},{ar:'مُبَكِّرًا',fr:'tôt'}],options:['Je dors tôt','Je me réveille tard','Je me repose','Je travaille la nuit'],tip:'أَنَامُ = je dors / مُبَكِّر = tôt'},
+  {level:4,arabic:'السَّمَاءُ زَرْقَاءُ وَالغَيْمُ أَبْيَض',translit:"As-samāʾu zarqāʾu wa-l-ghaym abyaḍ",fr:'Le ciel est bleu et le nuage est blanc',words:[{ar:'السَّمَاء',fr:'le ciel'},{ar:'زَرْقَاء',fr:'bleue'},{ar:'الغَيْم',fr:'nuage'},{ar:'أَبْيَض',fr:'blanc'}],options:['Le ciel est bleu et le nuage est blanc','La mer est verte','Le soleil est orange','L\'herbe est verte'],tip:'سَمَاء = ciel / زَرْقَاء = bleue / غَيْم = nuage / أَبْيَض = blanc'},
+  {level:4,arabic:'أُحِبُّ الْعَرَبِيَّةَ لِأَنَّهَا جَمِيلَة',translit:"Uḥibbu l-ʿarabiyyata liʾannahā jamīla",fr:"J'aime l'arabe parce qu'elle est belle",words:[{ar:'أُحِبُّ',fr:"j'aime"},{ar:'الْعَرَبِيَّة',fr:"l'arabe"},{ar:'لِأَنَّهَا',fr:"parce qu'elle"},{ar:'جَمِيلَة',fr:'belle'}],options:["J'aime l'arabe parce qu'elle est belle","Je parle français","L'arabe est difficile","Je préfère les maths"],tip:'لِأَنَّ = parce que / جَمِيل = beau'},
+  {level:4,arabic:'الوَلَدُ يَلْعَبُ فِي الحَدِيقَة',translit:"Al-waladu yalʿabu fī l-ḥadīqa",fr:'Le garçon joue dans le jardin',words:[{ar:'الوَلَد',fr:'garçon'},{ar:'يَلْعَبُ',fr:'joue'},{ar:'فِي',fr:'dans'},{ar:'الحَدِيقَة',fr:'jardin'}],options:['Le garçon joue dans le jardin','La fille court','L\'enfant dort','Le garçon étudie'],tip:'وَلَد = garçon / يَلْعَب = il joue / حَدِيقَة = jardin'},
+  {level:4,arabic:'نَحْنُ نَتَعَلَّمُ الْعَرَبِيَّةَ مَعًا',translit:"Naḥnu nataʿallamu l-ʿarabiyyata maʿan",fr:"Nous apprenons l'arabe ensemble",words:[{ar:'نَحْنُ',fr:'nous'},{ar:'نَتَعَلَّمُ',fr:'nous apprenons'},{ar:'مَعًا',fr:'ensemble'}],options:["Nous apprenons l'arabe ensemble","Vous parlez trop vite","Ils jouent au football","Je travaille seul"],tip:"نَحْن = nous / نَتَعَلَّم = nous apprenons / مَعًا = ensemble"},
+  {level:5,arabic:'عِنْدَمَا أَكْبَرُ، سَأَكُونُ طَبِيبًا',translit:"ʿIndamā akbaru, saʾakūnu ṭabīban",fr:'Quand je serai grand, je serai médecin',words:[{ar:'عِنْدَمَا',fr:'quand'},{ar:'أَكْبَرُ',fr:'je grandis'},{ar:'سَأَكُونُ',fr:'je serai'},{ar:'طَبِيبًا',fr:'médecin'}],options:['Quand je serai grand, je serai médecin','Je suis déjà médecin','J\'aimerais être prof','Mon père est ingénieur'],tip:'عِنْدَمَا = quand / سَ = futur / طَبِيب = médecin'},
+  {level:5,arabic:'الْمَاءُ ضَرُورِيٌّ لِلْحَيَاة',translit:"Al-māʾu ḍarūriyyun lil-ḥayāt",fr:"L'eau est nécessaire à la vie",words:[{ar:'الْمَاء',fr:"l'eau"},{ar:'ضَرُورِيّ',fr:'nécessaire'},{ar:'لِلْحَيَاة',fr:'pour la vie'}],options:["L'eau est nécessaire à la vie","L'air est chaud","La nature est belle","L'eau de mer est salée"],tip:'ضَرُورِيّ = nécessaire / حَيَاة = vie'},
+  {level:5,arabic:'يَجِبُ أَنْ نُحَافِظَ عَلَى الْبِيئَة',translit:"Yajibu an nuḥāfiẓa ʿalā l-bīʾa",fr:"Il faut protéger l'environnement",words:[{ar:'يَجِبُ',fr:'il faut'},{ar:'نُحَافِظَ',fr:'nous protégions'},{ar:'الْبِيئَة',fr:"l'environnement"}],options:["Il faut protéger l'environnement","Nous devons nettoyer","Il est important d'étudier","Nous aimons la nature"],tip:"يَجِب = il faut / بِيئَة = environnement"},
+  {level:5,arabic:'الصَّدِيقُ الحَقِيقِيُّ يَبْقَى فِي الشِّدَّة',translit:"Aṣ-ṣadīqu l-ḥaqīqiyyu yabqā fī sh-shidda",fr:'Le vrai ami reste dans les moments difficiles',words:[{ar:'الصَّدِيق',fr:"l'ami"},{ar:'الحَقِيقِيّ',fr:'vrai'},{ar:'يَبْقَى',fr:'reste'},{ar:'الشِّدَّة',fr:"l'épreuve"}],options:['Le vrai ami reste dans les moments difficiles','On apprend de ses erreurs','La famille est importante','Sois patient'],tip:"صَدِيق = ami / حَقِيقِيّ = vrai / شِدَّة = épreuve"},
+  {level:5,arabic:'الْعِلْمُ نُورٌ وَالْجَهْلُ ظُلْمَة',translit:"Al-ʿilmu nūrun wa-l-jahlu ẓulma",fr:"Le savoir est lumière et l'ignorance est obscurité",words:[{ar:'الْعِلْم',fr:'le savoir'},{ar:'نُور',fr:'lumière'},{ar:'الْجَهْل',fr:"l'ignorance"},{ar:'ظُلْمَة',fr:'obscurité'}],options:["Le savoir est lumière et l'ignorance est obscurité","La patience est une vertu","La famille est un trésor","La vie est courte"],tip:"عِلْم = savoir / نُور = lumière / جَهْل = ignorance — proverbe arabe célèbre !"},
+];
+
+const PH_LEVELS=[
+  {num:1,name:'Débutant',desc:'Salutations simples',emoji:'🌱',color:'#4CAF50'},
+  {num:2,name:'Famille',desc:'Famille et maison',emoji:'🏠',color:'#2196F3'},
+  {num:3,name:'Quotidien',desc:'Actions de tous les jours',emoji:'🌞',color:'#FF9800'},
+  {num:4,name:'Descriptions',desc:'Décrire et exprimer',emoji:'🌟',color:'#9C27B0'},
+  {num:5,name:'Avancé',desc:'Phrases complexes',emoji:'🔥',color:'#FF5722'},
+];
+
+let phLevel=1,phPhrases=[],phIdx=0,phScore=0,phAnswered=false;
+const phDone={1:false,2:false,3:false,4:false,5:false};
+
+function phShowLevels(){
+  document.getElementById('phView').style.display='block';
+  document.getElementById('phPhraseView').style.display='none';
+  document.getElementById('phResultView').style.display='none';
+  const g=document.getElementById('phLevelsGrid');g.innerHTML='';
+  PH_LEVELS.forEach(li=>{
+    const phrases=PHRASES.filter(p=>p.level===li.num);
+    const c=document.createElement('button');c.className='ph-lcard'+(phDone[li.num]?' done':'');
+    c.innerHTML=`<div class="ph-licon">${li.emoji}</div><div class="ph-lname" style="color:${li.color}">Niveau ${li.num} — ${li.name}</div><div class="ph-ldesc">${li.desc}</div><div class="ph-ldesc" style="margin-top:3px">${phrases.length} phrases</div>`;
+    c.onclick=()=>phStart(li.num);g.appendChild(c);
+  });
+}
+
+function phStart(level){
+  phLevel=level;phPhrases=PHRASES.filter(p=>p.level===level).sort(()=>Math.random()-0.5);
+  phIdx=0;phScore=0;phAnswered=false;
+  const li=PH_LEVELS.find(l=>l.num===level);
+  const badge=document.getElementById('phBadge');
+  badge.textContent=`Niveau ${level} — ${li.name}`;
+  badge.style.background=`linear-gradient(135deg,${li.color},${li.color}bb)`;
+  badge.style.color='white';
+  document.getElementById('phView').style.display='none';
+  document.getElementById('phPhraseView').style.display='block';
+  document.getElementById('phResultView').style.display='none';
+  phRender();
+}
+
+function phRender(){
+  phAnswered=false;
+  document.getElementById('phFb').className='hidden';document.getElementById('phNext').className='ph-next hidden';
+  const q=phPhrases[phIdx];const total=phPhrases.length;
+  document.getElementById('phNum').textContent=`Phrase ${phIdx+1}/${total}`;
+  document.getElementById('phProgFill').style.width=((phIdx/total)*100)+'%';
+  document.getElementById('phAr').textContent=q.arabic;
+  document.getElementById('phTranslit').textContent=q.translit;
+  const wp=document.getElementById('phWords');wp.innerHTML='';
+  if(q.words){q.words.forEach(w=>{
+    const s=document.createElement('span');s.className='ph-wd';s.textContent=w.ar;s.title=w.fr;
+    s.onclick=()=>{playArabic(w.ar);s.style.color='#FFD700';setTimeout(()=>s.style.color='',700);};wp.appendChild(s);
+  });}
+  const og=document.getElementById('phOpts');og.innerHTML='';
+  [...q.options].sort(()=>Math.random()-0.5).forEach((opt,i)=>{
+    const b=document.createElement('button');b.className='ph-opt';
+    b.innerHTML=`<span class="ph-opt-i">${String.fromCharCode(65+i)}</span>${opt}`;
+    b.onclick=()=>{
+      if(phAnswered)return;phAnswered=true;const ok=opt===q.fr;
+      document.querySelectorAll('.ph-opt').forEach(x=>{x.disabled=true;if(x.textContent.includes(q.fr))x.classList.add('correct');});
+      if(!ok)b.classList.add('wrong');if(ok){phScore++;addStar();}
+      const fb=document.getElementById('phFb');fb.className='ph-fb '+(ok?'good':'bad');
+      fb.innerHTML=(ok?'🎉 Bravo ! ':'😅 Bonne réponse : <strong>'+q.fr+'</strong>')+`<br><small style="font-size:11px;opacity:0.6;display:block;margin-top:3px;direction:ltr">💡 ${q.tip}</small>`;
+      const nb=document.getElementById('phNext');nb.className='ph-next';
+      nb.textContent=(phIdx+1>=phPhrases.length)?'🏁 Voir le score !':'Suivant →';
+    };og.appendChild(b);
+  });
+  setTimeout(()=>playArabic(q.arabic),400);
+}
+
+function phSpeak(){const q=phPhrases[phIdx];if(q)playArabic(q.arabic);}
+
+function phNextPhrase(){
+  phIdx++;
+  if(phIdx>=phPhrases.length){
+    phDone[phLevel]=true;const total=phPhrases.length;const pct=Math.round((phScore/total)*100);
+    document.getElementById('phRTrophy').textContent=pct===100?'🏆':pct>=60?'🥇':'💪';
+    document.getElementById('phRTitle').textContent=pct===100?'Parfait !':pct>=60?'Très bien !':'Continue !';
+    document.getElementById('phRScore').textContent=phScore+' / '+total;
+    document.getElementById('phRScore').style.color=pct>=60?'#FFD700':'#FF8A80';
+    document.getElementById('phRMsg').textContent=pct===100?'Tu maîtrises ce niveau ! 🌟':pct>=60?'Super progrès ! ⭐':'Rejoue pour t\'améliorer ! 💪';
+    document.getElementById('phRRetry').onclick=()=>phStart(phLevel);
+    document.getElementById('phPhraseView').style.display='none';document.getElementById('phResultView').style.display='block';
+  }else phRender();
+}
+
+document.addEventListener('click',e=>{
+  const p=document.getElementById('bsWdPop');
+  if(p&&!p.contains(e.target))p.style.display='none';
+});
+
+// =====================================================
+window.addEventListener('load',init);
+</script>
+</body>
+</html>
