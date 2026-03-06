@@ -1128,19 +1128,19 @@ let speedQ=[],speedIdx=0,speedScore=0,speedTimer=null,speedTimeLeft=0,speedDone=
 // =====================================================
 // AUDIO
 // =====================================================
-const audioCache={};
-function playArabic(text){
-  if(audioCache[text]){audioCache[text].currentTime=0;audioCache[text].play().catch(()=>fallback(text));return;}
-  const url='https://translate.google.com/translate_tts?ie=UTF-8&tl=ar&client=tw-ob&q='+encodeURIComponent(text);
-  const a=new Audio(url);
-  audioCache[text]=a;
-  a.play().catch(()=>fallback(text));
+// Web Speech API — fonctionne sur GitHub Pages
+let _arVoice=null;
+function _loadVoice(){
+  const v=window.speechSynthesis.getVoices();
+  _arVoice=v.find(x=>x.lang==='ar-SA')||v.find(x=>x.lang==='ar-EG')||v.find(x=>x.lang.startsWith('ar'))||null;
 }
-function fallback(text){
+if(window.speechSynthesis){_loadVoice();window.speechSynthesis.onvoiceschanged=_loadVoice;}
+function playArabic(text){
   if(!window.speechSynthesis)return;
   window.speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
-  u.lang='ar-SA';u.rate=0.8;
+  u.lang='ar-SA';u.rate=0.8;u.pitch=1;
+  if(_arVoice)u.voice=_arVoice;
   window.speechSynthesis.speak(u);
 }
 
